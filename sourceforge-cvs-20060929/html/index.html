@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" >
+<HTML>
+	<HEAD>
+		<TITLE>XmlRpc++ - Home</TITLE>
+		<SCRIPT language="JavaScript">
+<!--Break out of frames
+if (top.frames.length!=0)
+top.location=self.document.location;
+//-->
+		</SCRIPT>
+		<style type="text/css"> <!-- A:link { text-decoration: underline; color:"#3333cc" }
+	A:visited { text-decoration: underline; color:"#000000" }
+	A:hover { text-decoration: underline; color:"#FF99FF" }
+	--></style>
+	</HEAD>
+	<BODY text="#3333cc" vLink="#000000" aLink="#3333dd" link="#3333cc" bgColor="#ebebeb">
+		<TABLE height="100%" cellSpacing="0" cellPadding="2" width="100%" border="0">
+			<TR>
+				<TD colspan="2" vAlign="top" align="left" bgColor="#ebebeb" height="63" width="274">
+					<IMG src="xmlrpc.jpg" alt="XmlRpc++" height="63" width="274">
+				</TD>
+			</TR>
+			<TR>
+				<TD height="6" width="140"></TD>
+				<TD></TD>
+			</TR>
+			<TR>
+				<TD vAlign="top" align="left" bgColor="#ebebeb" height="63" width="140">
+					<TABLE height="100%" cellSpacing="0" cellPadding="0" width="100%" border="0">
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+								<A href="http://sourceforge.net/projects/xmlrpcpp" title="Project page at SourceForge">
+									Project Page</A>
+							</TD>
+						</TR>
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+								<A href="http://sourceforge.net/project/showfiles.php?group_id=70654" title="Download the source">
+									Downloads</A>
+							</TD>
+						</TR>
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+								<A href="http://sourceforge.net/forum/forum.php?forum_id=240495" title="Discussion area">
+									Help Forum</A>
+							</TD>
+						</TR>
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+								<A href="faq.html" title="Frequently Asked Questions">FAQ</A>
+							</TD>
+						</TR>
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+								<A href="http://sourceforge.net/news/?group_id=70654" title="Latest News">News</A>
+							</TD>
+						</TR>
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb">
+								<table width="100%">
+									<tr>
+										<td align="left" height="30">Documentation</td>
+									</tr>
+									<tr>
+										<td align="right" width="100%">
+											<table align="right" width="100%">
+												<TR>
+													<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+														<A href="doc/hierarchy.html" title="Class Hierarchy">Class Hierarchy</A>
+													</TD>
+												</TR>
+												<TR>
+													<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+														<A href="doc/annotated.html" title="Class List">Class List</A>
+													</TD>
+												</TR>
+												<TR>
+													<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+														<A href="doc/files.html" title="File List">File List</A>
+													</TD>
+												</TR>
+												<TR>
+													<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+														<A href="doc/functions.html" title="Method List">Method List</A>
+													</TD>
+												</TR>
+											</table>
+										</td>
+									</tr>
+								</table>
+							</TD>
+						</TR>
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+								<A href="http://sourceforge.net/cvs/?group_id=70654" title="Current sources">CVS</A>
+							</TD>
+						</TR>
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+								<A href="links.html" title="Related information">Related Sites</A>
+							</TD>
+						</TR>
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb" height="32">
+							</TD>
+						</TR>
+						<TR>
+							<TD vAlign="top" align="left" bgColor="#ebebeb">
+								<A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=70654&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo">
+								</A>
+							</TD>
+						</TR>
+					</TABLE>
+				</TD>
+				<TD align="left" valign="top" >
+					<h2>Overview</h2>
+					<A href="http://xmlrpcpp.sourceforge.net/">XmlRpc++</A> is a C++ implementation 
+					of the <A href="http://www.xmlrpc.org">XML-RPC</A> protocol. It is based upon 
+					Shilad Sen's excellent <A href="http://sourceforge.net/projects/py-xmlrpc">py-xmlrpc</A>. 
+					The XmlRpc protocol was designed to make remote procedure calls easy: it 
+					encodes data in a simple <a href="http://www.w3.org/XML/">XML</a> format and 
+					uses <a href="http://www.w3.org/Protocols/">HTTP</a> for communication. 
+					XmlRpc++ is designed to make it easy to incorporate XML-RPC client and server 
+					support into C++ applications.
+					<h2>Features</h2>
+					<UL>
+						<li>
+							<STRONG>Easy</STRONG> &nbsp; This library is easy to incorporate into C++ 
+							applications. No other libraries are required, other than your system's socket 
+							libraries. Simple XML parsing and HTTP support are built in.<br>
+							<br>
+						<li>
+							<STRONG>Fast</STRONG> &nbsp; All IO is non-blocking, so a slow client or 
+							network will not slow down the server.<br>
+							<br>
+						<li>
+							<STRONG>Portable</STRONG> Written in standard C++ to the POSIX and Windows 
+							sockets APIs. You do need a fairly recent compiler (g++ 3.1 or MSVC++ .Net or 
+							MSVC++ 6 with the <A href="http://www.dinkumware.com/vc_fixes.html">STL patches</A>.)<br>
+							<br>
+						<li>
+							<STRONG>Free</STRONG> &nbsp; This library is released under the <a href="http://www.gnu.org/">
+								GNU</a> <a href="http://www.gnu.org/copyleft/lesser.html">LGPL</a>.<br>
+							<br>
+						</li>
+					</UL>
+				</TD>
+			</TR>
+			<TR>
+				<TD width="140">
+				</TD>
+			</TR>
+		</TABLE>
+	</BODY>
+</HTML>
