@@ -1,0 +1,30 @@
+Source: xmlrpc++
+Section: devel
+Priority: optional
+Maintainer: jeff <jeff@freemedsoftware.com>
+Standards-Version: 3.5.8
+Build-Depends: debmake make gcc libssl-dev
+
+Package: libxmlrpc++1-dev
+Architecture: any
+Depends: libxmlrpc++1, libc6-dev, libssl-dev
+Provides: libxmlrpc++-dev
+Conflicts: libxmlrpc++-dev
+Description: C++ library for XML-RPC development files
+  XmlRpc++ is a C++ implementation of the XML-RPC protocol. It is based upon
+  Shilad Sen's excellent py-xmlrpc. The XmlRpc protocol was designed to make
+  remote procedure calls easy: it encodes data in a simple XML format and
+  uses HTTP for communication. XmlRpc++ is designed to make it easy to
+  incorporate XML-RPC client and server support into C++ applications.
+  This package is needed to develop applications with this library.
+
+Package: libxmlrpc++1
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: C++ library for XML-RPC
+  XmlRpc++ is a C++ implementation of the XML-RPC protocol. It is based upon
+  Shilad Sen's excellent py-xmlrpc. The XmlRpc protocol was designed to make
+  remote procedure calls easy: it encodes data in a simple XML format and
+  uses HTTP for communication. XmlRpc++ is designed to make it easy to
+  incorporate XML-RPC client and server support into C++ applications.
+
