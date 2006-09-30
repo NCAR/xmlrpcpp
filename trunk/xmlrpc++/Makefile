@@ -5,12 +5,12 @@ SHARED		= -shared
 CPPFLAGS	= -I$(SRC)
 DEBUG		= -g
 OPTIMIZE	= -O2
-GCCWARN		= -Wall -Wstrict-prototypes
+GCCWARN		= -Wall
 CXXFLAGS	= $(DEBUG) $(GCCWARN) $(OPTIMIZE) $(INCLUDES)
 VERSION		= 0.8
 
 DESTDIR		=
-prefix		= /usr
+prefix		= /opt/local/nidas/x86
 MKDIR		= mkdir -p
 CP		= cp
 LN		= ln -s
@@ -60,8 +60,8 @@ clean:
 install:
 		$(MKDIR) $(DESTDIR)$(prefix)/lib
 		$(CP) $(SO) $(LIB) $(DESTDIR)$(prefix)/lib
-		$(MKDIR) $(DESTDIR)$(prefix)/include
-		$(CP) src/*.h $(DESTDIR)$(prefix)/include
+		$(MKDIR) $(DESTDIR)$(prefix)/include/xmlrpc++
+		$(CP) src/*.h $(DESTDIR)$(prefix)/include/xmlrpc++
 		( cd $(DESTDIR)$(prefix)/lib; rm -f libxmlrpc++.so; $(LN) $(SO) libxmlrpc++.so )
 		# Does not install tests right now	
 
