@@ -4,8 +4,14 @@ SRC		= ./src
 CPPFLAGS	= -I$(SRC)
 DEBUG		= -g
 OPTIMIZE	= -O2
-GCCWARN		= -Wall -Wstrict-prototypes
+GCCWARN		= -Wall
 CXXFLAGS	= $(DEBUG) $(GCCWARN) $(OPTIMIZE) $(INCLUDES)
+
+DESTDIR		=
+prefix		= /opt/local/nidas/x86
+MKDIR		= mkdir -p
+CP		= cp
+LN		= ln -s
 
 LIB		= ./libXmlRpc.a
 
@@ -40,3 +46,15 @@ clean:
 		rm -f $(LIB)
 		cd test && $(MAKE) clean
 
+install:
+		$(MKDIR) $(DESTDIR)$(prefix)/lib
+		$(CP) $(SO) $(LIB) $(DESTDIR)$(prefix)/lib
+		$(MKDIR) $(DESTDIR)$(prefix)/include/xmlrpc++
+		$(CP) src/*.h $(DESTDIR)$(prefix)/include/xmlrpc++
+		( cd $(DESTDIR)$(prefix)/lib; rm -f libxmlrpc++.so; $(LN) $(SO) libxmlrpc++.so )
+		# Does not install tests right now	
+
+# Debian package make target, in case you want to manually build a package
+# from the distribution.
+deb:
+		dpkg-buildpackage -rfakeroot
