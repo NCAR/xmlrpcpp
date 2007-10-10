@@ -28,7 +28,7 @@ OBJ		= $(SRC)/XmlRpcClient.o $(SRC)/XmlRpcDispatch.o \
 		$(SRC)/XmlRpcServerMethod.o $(SRC)/XmlRpcSocket.o $(SRC)/XmlRpcSource.o \
 		$(SRC)/XmlRpcUtil.o $(SRC)/XmlRpcValue.o
 
-all:		$(LIB) tests
+all:		$(LIB) 
 
 $(LIB):		$(OBJ)
 		$(AR) $(ARFLAGS) $(LIB) $(OBJ)
