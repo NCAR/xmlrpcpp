@@ -1,11 +1,13 @@
 # makefile written for gnu make
 CXX		= g++
 SRC		= ./src
+SHARED		= -shared
 CPPFLAGS	= -I$(SRC)
 DEBUG		= -g
 OPTIMIZE	= -O2
 GCCWARN		= -Wall
 CXXFLAGS	= $(DEBUG) $(GCCWARN) $(OPTIMIZE) $(INCLUDES)
+VERSION         = 0.7
 
 DESTDIR		=
 prefix		= /opt/local/nidas/x86
@@ -14,6 +16,7 @@ CP		= cp
 LN		= ln -s
 
 LIB		= ./libXmlRpc.a
+SO              = ./libxmlrpc++.so.$(VERSION)
 
 # Add your system-dependent network libs here. These are
 # only used to build the tests (your application will need them too).
@@ -28,11 +31,13 @@ OBJ		= $(SRC)/XmlRpcClient.o $(SRC)/XmlRpcDispatch.o \
 		$(SRC)/XmlRpcServerMethod.o $(SRC)/XmlRpcSocket.o $(SRC)/XmlRpcSource.o \
 		$(SRC)/XmlRpcUtil.o $(SRC)/XmlRpcValue.o
 
-all:		$(LIB) 
+all:		$(LIB) $(SO) tests
 
 $(LIB):		$(OBJ)
 		$(AR) $(ARFLAGS) $(LIB) $(OBJ)
 
+$(SO):          $(OBJ)
+		$(CXX) -o $(SO) $(SHARED) $(OBJ)
 
 tests:		$(LIB)
 		cd test && $(MAKE) CXX=$(CXX) CXXFLAGS="$(CXXFLAGS)" SYSTEMLIBS="$(SYSTEMLIBS)"
