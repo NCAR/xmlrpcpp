@@ -73,12 +73,13 @@ rsync $tardest/*.patch xmlrpc++${version}.tar.gz $topdir/SOURCES
 rpmbuild -ba --clean xmlrpc++.spec
 
 if $doarm; then
-    rpmbuild -ba --target=armv5tel --clean xmlrpc++-x-arm.spec
-    # rpmbuild -bc -vv --target=armv5tel xmlrpc++-x-arm.spec
+    rpmbuild -ba --clean xmlrpc++-x-arm.spec
+    # rpmbuild -ba --target=armv5tel --clean xmlrpc++-x-arm.spec
 fi
 
 if $doarmbe; then
-    rpmbuild -ba --target=armv5te --clean xmlrpc++-x-armbe.spec
+    rpmbuild -ba --clean xmlrpc++-x-armbe.spec
+    # rpmbuild -ba --target=armv5te --clean xmlrpc++-x-armbe.spec
 fi
 
 # if $doarm; then

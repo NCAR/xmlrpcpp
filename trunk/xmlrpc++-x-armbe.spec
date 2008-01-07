@@ -1,28 +1,26 @@
+%define xarch armbe
+%define xname xmlrpc++
 Summary:    A C++ implementation of the XML-RPC protocol
-Name:   xmlrpc++
+Name:       %{xname}-x-%{xarch}
 Version:    0.7
 Release:    1%{?dist}
 License:    GPL
 Group:      System Environment/Libraries
 URL:        http://xmlrpcpp.sourceforge.net
-Source:     %{name}%{version}.tar.gz
-Patch0:     %{name}%{version}.patch
+Source:     %{xname}%{version}.tar.gz
+Patch0:     %{xname}%{version}.patch
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-# Use rpmbuild --target=armv5tel to build this package
-# See possible target/architecture strings in /usr/lib/rpm/rpmrc
-ExclusiveArch:  armv5te
-# note: no -g option
+# See suggested target/architecture compiler options in /usr/lib/rpm/rpmrc.
+# ExclusiveArch:  armv5te
 %define optflags -O2 -march=armv4t
 
 %define _use_internal_dependency_generator     0
 
 # Override where the libraries and header files are installed
-%define _prefix /opt/local/arm
-# %_libdir /opt/local/arm/lib
-# %_includedir /opt/local/arm/lib
-%{echo:"_prefix=%{_prefix}\n"}
-%{echo:_libdir=%{_libdir}}
+%define _prefix /opt/local/%{xarch}
+# %{echo:"_prefix=%{_prefix}\n"}
+# %{echo:_libdir=%{_libdir}}
 %define debug_package %{nil}
 
 %description
@@ -37,7 +35,7 @@ XML-RPC client and server support into C++ applications.
 %patch0 -p1
 
 %build
-%{__make} CXXFLAGS="${RPM_OPT_FLAGS}" CXX=armbe-linux-g++ prefix=%{_prefix}
+%{__make} CXXFLAGS="${RPM_OPT_FLAGS}" CXX=%{xarch}-linux-g++ prefix=%{_prefix}
 
 %install
 %{__make} install prefix="$RPM_BUILD_ROOT%{_prefix}"
@@ -55,4 +53,4 @@ XML-RPC client and server support into C++ applications.
 %changelog
 
 * Mon Dec 24 2007 Gordon Maclean <maclean@ucar.edu> 0.7-1
-- RPM of cross compiled xmlrpc++ for arm
+- RPM of cross compiled xmlrpc++ for armbe
