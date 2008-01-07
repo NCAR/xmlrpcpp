@@ -25,11 +25,6 @@ which arm-linux-gcc > /dev/null 2>&1 && doarm=true
 doarmbe=false
 which armbe-linux-gcc > /dev/null 2>&1 && doarmbe=true
 
-if ! $doarm && ! $doarmbe; then
-    echo "no arm cross compilers found"
-    exit 1
-fi
-
 version=0.7
 fversion=`echo $version | sed 's/\./_/g'`
 
