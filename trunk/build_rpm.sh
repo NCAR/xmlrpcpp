@@ -77,13 +77,23 @@ if $doarmbe; then
     # rpmbuild -ba --target=armv5te --clean xmlrpc++-x-armbe.spec
 fi
 
-# if $doarm; then
-    # sudo rpm -ihv --ignorearch $HOME/rpmbuild/RPMS/armv5tel/xerces-c-x-arm-2.8.0-1.fc7.armv5tel.rpm
-    # sudo rpm -ihv --ignorearch $HOME/rpmbuild/RPMS/armv5tel/xerces-c-x-arm-devel-2.8.0-1.fc7.armv5tel.rpm
-# fi
+repo=/net/www/docs/software/rpms
 
-# if $doarmbe; then
-    # sudo rpm -ihv --ignorearch $HOME/rpmbuild/RPMS/armv5te/xerces-c-x-armbe-2.8.0-1.fc7.armv5te.rpm
-    # sudo rpm -ihv --ignorearch $HOME/rpmbuild/RPMS/armv5te/xerces-c-x-armbe-devel-2.8.0-1.fc7.armv5te.rpm
-# fi
+if [ -d $repo ]; then
 
+    rpms=($topdir/RPMS/i386/xmlrpc++-x-arm*-${version}*.rpm \
+        $topdir/RPMS/i386/xmlrpc++-${version}*.rpm \
+        $topdir/SRPMS/xmlrpc++-x-arm*-${version}*.src.rpm)
+
+    for r in ${rpms[*]}; do
+        rr=${r%.*}
+        rr=${rr%.*}
+        dist=${rr##*.}
+        case $dist in
+        fc7 | fc8)
+            rsync $r $repo/$dist/RPMS
+            ;;
+        esac
+    done
+
+fi
