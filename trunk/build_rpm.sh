@@ -81,9 +81,6 @@ repo=/net/www/docs/software/rpms
 
 if [ -d $repo ]; then
 
-    rpms=($topdir/RPMS/i386/xmlrpc++-x-arm*-${version}*.rpm \
-        $topdir/RPMS/i386/xmlrpc++-${version}*.rpm \
-        $topdir/SRPMS/xmlrpc++-x-arm*-${version}*.src.rpm)
 
     for r in ${rpms[*]}; do
         rr=${r%.*}
@@ -97,3 +94,48 @@ if [ -d $repo ]; then
     done
 
 fi
+
+repo=/net/www/docs/software/rpms
+
+dists=()
+
+if [ -d $repo ]; then
+
+    rpms=($topdir/RPMS/i386/xmlrpc++-x-arm*-${version}*.rpm \
+        $topdir/RPMS/i386/xmlrpc++-${version}*.rpm)
+    for r in ${rpms[*]}; do
+        rr=${r%.*}
+        rr=${rr%.*}
+        dist=${rr##*.}
+        case $dist in
+        fc7 | fc8)
+            rsync $r $repo/$dist/RPMS
+            dists=(${dists[*]} $dist)
+            ;;
+        esac
+    done
+    rpms=($topdir/SRPMS/xmlrpc++-x-arm*-${version}*.src.rpm)
+    for r in ${rpms[*]}; do
+        rr=${r%.*}
+        rr=${rr%.*}
+        dist=${rr##*.}
+        case $dist in
+        fc7 | fc8)
+            rsync $r $repo/$dist/SRPMS
+            dists=(${dists[*]} $dist)
+            ;;
+        esac
+    done
+
+fi
+
+OLDIFS=$IFS
+IFS=$'\n'
+dists=(`echo "${dists[*]}" | sort -u`)
+IFS=$OLDIFS
+
+for d in ${dists[*]}; do
+    cd $repo/$d
+    createrepo .
+done
+
