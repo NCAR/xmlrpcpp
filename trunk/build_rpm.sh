@@ -82,6 +82,8 @@ if [ -d $repo ]; then
         rr=${r%.*}
         rr=${rr%.*}
         dist=${rr##*.}
+        [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
+        [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
         case $dist in
         fc7 | fc8)
             rsync $r $repo/$dist/RPMS
@@ -95,6 +97,8 @@ if [ -d $repo ]; then
         rr=${r%.*}
         rr=${rr%.*}
         dist=${rr##*.}
+        [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
+        [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
         case $dist in
         fc7 | fc8)
             rsync $r $repo/$dist/SRPMS
@@ -105,6 +109,8 @@ if [ -d $repo ]; then
 
     # copy cross rpms to ael repositiory
     dist=ael
+    [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
+    [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
     rpms=($topdir/RPMS/i386/xmlrpc++-cross-*-${version}*.rpm)
     for r in ${rpms[*]}; do
         rsync $r $repo/$dist/RPMS
