@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Build arm and armbe RPMs of xmlrpc++.
+# Build x86, arm and armbe RPMs of xmlrpc++.
 
 # To build an rpm we need the following:
 # 1 tar of source
@@ -67,42 +67,17 @@ rsync $tardest/*.patch xmlrpc++${version}.tar.gz $topdir/SOURCES
 
 rpmbuild -ba --clean xmlrpc++.spec
 
-if $doarm; then
-    rpmbuild -ba --clean xmlrpc++-x-arm.spec
-    # rpmbuild -ba --target=armv5tel --clean xmlrpc++-x-arm.spec
-fi
-
-if $doarmbe; then
-    rpmbuild -ba --clean xmlrpc++-x-armbe.spec
-    # rpmbuild -ba --target=armv5te --clean xmlrpc++-x-armbe.spec
-fi
+archs=""
+$doarm && archs="$archs arm"
+$doarmbe && archs="$archs armbe"
+rpmbuild --define "archs $archs" -ba --clean  xmlrpc++-cross.spec
 
 repo=/net/www/docs/software/rpms
-
-if [ -d $repo ]; then
-
-
-    for r in ${rpms[*]}; do
-        rr=${r%.*}
-        rr=${rr%.*}
-        dist=${rr##*.}
-        case $dist in
-        fc7 | fc8)
-            rsync $r $repo/$dist/RPMS
-            ;;
-        esac
-    done
-
-fi
-
-repo=/net/www/docs/software/rpms
-
 dists=()
 
 if [ -d $repo ]; then
-
-    rpms=($topdir/RPMS/i386/xmlrpc++-x-arm*-${version}*.rpm \
-        $topdir/RPMS/i386/xmlrpc++-${version}*.rpm)
+    # copy rpm for this distribution (fc8,el5,etc) to repositiory
+    rpms=($topdir/RPMS/i386/xmlrpc++-${version}*.rpm)
     for r in ${rpms[*]}; do
         rr=${r%.*}
         rr=${rr%.*}
@@ -114,7 +89,8 @@ if [ -d $repo ]; then
             ;;
         esac
     done
-    rpms=($topdir/SRPMS/xmlrpc++-x-arm*-${version}*.src.rpm)
+    # copy source rpm for this distribution (fc8,el5,etc) to repositiory
+    rpms=($topdir/SRPMS/xmlrpc++-${version}*.rpm)
     for r in ${rpms[*]}; do
         rr=${r%.*}
         rr=${rr%.*}
@@ -127,15 +103,29 @@ if [ -d $repo ]; then
         esac
     done
 
+    # copy cross rpms to ael repositiory
+    dist=ael
+    rpms=($topdir/RPMS/i386/xmlrpc++-cross-*-${version}*.rpm)
+    for r in ${rpms[*]}; do
+        rsync $r $repo/$dist/RPMS
+    done
+
+    # copy source rpms to ael repositiory
+    rpms=($topdir/SRPMS/xmlrpc++-x-arm*-${version}*.src.rpm)
+    for r in ${rpms[*]}; do
+        rsync $r $repo/$dist/SRPMS
+    done
+    dists=(${dists[*]} $dist)
+
+    # update repository metadata
+    OLDIFS=$IFS
+    IFS=$'\n'
+    dists=(`echo "${dists[*]}" | sort -u`)
+    IFS=$OLDIFS
+
+    for d in ${dists[*]}; do
+        cd $repo/$d
+        createrepo .
+    done
 fi
-
-OLDIFS=$IFS
-IFS=$'\n'
-dists=(`echo "${dists[*]}" | sort -u`)
-IFS=$OLDIFS
-
-for d in ${dists[*]}; do
-    cd $repo/$d
-    createrepo .
-done
 
