@@ -23,10 +23,10 @@ XML-RPC client and server support into C++ applications.
 %patch0 -p1
 
 %build
-%{__make} CXXFLAGS="${RPM_OPT_FLAGS}" prefix=%{_prefix}
+%{__make} CXXFLAGS="${RPM_OPT_FLAGS} -fPIC" prefix=%{_prefix}
 
 %install
-%{__make} install prefix="$RPM_BUILD_ROOT%{_prefix}"
+%{__make} install LIBDIR=%{_lib} prefix="$RPM_BUILD_ROOT%{_prefix}"
 
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT

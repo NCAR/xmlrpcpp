@@ -19,6 +19,34 @@
 
 # set -x
 
+get_mydist() {
+    local rrel=/etc/redhat-release
+    local dist="unknown"
+    if [ -f $rrel ]; then
+        n=`sed 's/^.*release *\([0-9]*\).*/\1/' $rrel`
+        if fgrep -q Enterprise $rrel; then
+            dist=el$n
+        elif fgrep -q CentOS $rrel; then
+            dist=el$n
+        elif fgrep -q Fedora $rrel; then
+            dist=fc$n
+        fi
+        case `uname -i` in
+        x86_64)
+            dist=${dist}_64
+            ;;
+        *)
+            ;;
+        esac
+    fi
+    echo $dist
+}
+mydist=`get_mydist`
+if [ "$mydist" == unknown ]; then
+    echo "unknown distribution"
+    exit 1
+fi
+
 doarm=false
 which arm-linux-gcc > /dev/null 2>&1 && doarm=true
 
@@ -73,6 +101,8 @@ $doarmbe && archs="$archs armbe"
 rpmbuild --define "archs $archs" -ba --clean  xmlrpc++-cross.spec
 
 repo=/net/www/docs/software/rpms
+
+
 dists=()
 
 if [ -d $repo ]; then
@@ -82,14 +112,17 @@ if [ -d $repo ]; then
         rr=${r%.*}
         rr=${rr%.*}
         dist=${rr##*.}
-        [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
-        [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
         case $dist in
-        fc7 | fc8)
-            rsync $r $repo/$dist/RPMS
-            dists=(${dists[*]} $dist)
+        fc*)
+            ;;
+        *)
+            dist=$mydist
             ;;
         esac
+        [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
+        [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
+        rsync $r $repo/$dist/RPMS
+        dists=(${dists[*]} $dist)
     done
     # copy source rpm for this distribution (fc8,el5,etc) to repositiory
     rpms=($topdir/SRPMS/xmlrpc++-${version}*.rpm)
@@ -97,14 +130,17 @@ if [ -d $repo ]; then
         rr=${r%.*}
         rr=${rr%.*}
         dist=${rr##*.}
-        [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
-        [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
         case $dist in
-        fc7 | fc8)
-            rsync $r $repo/$dist/SRPMS
-            dists=(${dists[*]} $dist)
+        fc*)
+            ;;
+        *)
+            dist=$mydist
             ;;
         esac
+        [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
+        [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
+        rsync $r $repo/$dist/SRPMS
+        dists=(${dists[*]} $dist)
     done
 
     # copy cross rpms to ael repositiory
@@ -117,7 +153,7 @@ if [ -d $repo ]; then
     done
 
     # copy source rpms to ael repositiory
-    rpms=($topdir/SRPMS/xmlrpc++-x-arm*-${version}*.src.rpm)
+    rpms=($topdir/SRPMS/xmlrpc++-cross-${version}*.src.rpm)
     for r in ${rpms[*]}; do
         rsync $r $repo/$dist/SRPMS
     done
