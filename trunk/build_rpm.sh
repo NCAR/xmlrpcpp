@@ -19,29 +19,11 @@
 
 # set -x
 
-get_mydist() {
-    local rrel=/etc/redhat-release
-    local dist="unknown"
-    if [ -f $rrel ]; then
-        n=`sed 's/^.*release *\([0-9]*\).*/\1/' $rrel`
-        if fgrep -q Enterprise $rrel; then
-            dist=el$n
-        elif fgrep -q CentOS $rrel; then
-            dist=el$n
-        elif fgrep -q Fedora $rrel; then
-            dist=fc$n
-        fi
-        case `uname -i` in
-        x86_64)
-            dist=${dist}_64
-            ;;
-        *)
-            ;;
-        esac
-    fi
-    echo $dist
-}
-mydist=`get_mydist`
+# Get the repo_funcs in eol/repo/scripts
+source ../../../repo/scripts/repo_funcs.sh
+
+topdir=`get_rpm_topdir`
+rroot=`get_eol_repo_root`
 if [ "$mydist" == unknown ]; then
     echo "unknown distribution"
     exit 1
@@ -55,29 +37,6 @@ which armbe-linux-gcc > /dev/null 2>&1 && doarmbe=true
 
 version=0.7
 fversion=`echo $version | sed 's/\./_/g'`
-
-needs_topdir=true
-
-# Where to find user's rpm macro definitions
-rmacs=~/.rpmmacros
-
-[ -f $rmacs ] && grep -q "^[[:space:]]*%_topdir[[:space:]]" $rmacs && needs_topdir=false
-
-if $needs_topdir; then
-    mkdir -p ~/rpmbuild/{BUILD,RPMS,S{OURCE,PEC,RPM}S} || exit 1
-    echo "\
-%_topdir	%(echo \$HOME)/rpmbuild
-# turn off building the debuginfo package
-%debug_package	%{nil}\
-" > $rmacs
-fi
-
-topdir=`rpm --eval %_topdir`
-
-if [ `echo $topdir | cut -c 1` == "%" ]; then
-    echo "%_topdir not defined in $rmacs"
-    exit 1
-fi
 
 # untar the original source to /tmp, then create a patch by diffing
 # the original against our updates.
@@ -100,73 +59,51 @@ $doarm && archs="$archs arm"
 $doarmbe && archs="$archs armbe"
 rpmbuild --define "archs $archs" -ba --clean  xmlrpc++-cross.spec
 
-repo=/net/www/docs/software/rpms
+rpaths=()
 
-
-dists=()
-
-if [ -d $repo ]; then
+if [ -d $rroot ]; then
     # copy rpm for this distribution (fc8,el5,etc) to repositiory
     rpms=($topdir/RPMS/i386/xmlrpc++-${version}*.rpm)
     for r in ${rpms[*]}; do
-        rr=${r%.*}
-        rr=${rr%.*}
-        dist=${rr##*.}
-        case $dist in
-        fc*)
-            ;;
-        *)
-            dist=$mydist
-            ;;
-        esac
-        [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
-        [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
-        rsync $r $repo/$dist/RPMS
-        dists=(${dists[*]} $dist)
+        rpath=`get_repo_path_from_rpm $r
+        [ -d $rroot/$rpath ] || mkdir -p $rroot/$rpath || exit
+        rsync $r $rroot/$rpath
+        rpaths=(${rpaths[*]} ${rpath%/*})
     done
-    # copy source rpm for this distribution (fc8,el5,etc) to repositiory
+    # copy source rpm for this distribution (fc8,el5,etc) to rroot
     rpms=($topdir/SRPMS/xmlrpc++-${version}*.rpm)
     for r in ${rpms[*]}; do
-        rr=${r%.*}
-        rr=${rr%.*}
-        dist=${rr##*.}
-        case $dist in
-        fc*)
-            ;;
-        *)
-            dist=$mydist
-            ;;
-        esac
-        [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
-        [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
-        rsync $r $repo/$dist/SRPMS
-        dists=(${dists[*]} $dist)
+        rpath=`get_repo_path_from_rpm $r
+        [ -d $rroot/$rpath ] || mkdir -p $rroot/$rpath || exit
+        rsync $r $rroot/$rpath
+        rpaths=(${rpaths[*]} ${rpath%/*})
     done
 
     # copy cross rpms to ael repositiory
-    dist=ael
-    [ -d $repo/$dist/RPMS ] || mkdir -p $repo/$dist/RPMS || exit
-    [ -d $repo/$dist/SRPMS ] || mkdir -p $repo/$dist/SRPMS || exit
+    rpath=ael/1/i386
+    [ -d $rroot/$rpath ] || mkdir -p $rroot/$rpath || exit
     rpms=($topdir/RPMS/i386/xmlrpc++-cross-*-${version}*.rpm)
     for r in ${rpms[*]}; do
-        rsync $r $repo/$dist/RPMS
+        rsync $r $rroot/$rpath
     done
+    rpaths=(${rpaths[*]} ${rpath%/*})
 
     # copy source rpms to ael repositiory
+    rpath=ael/1/SRPMS
     rpms=($topdir/SRPMS/xmlrpc++-cross-${version}*.src.rpm)
     for r in ${rpms[*]}; do
-        rsync $r $repo/$dist/SRPMS
+        rsync $r $rroot/$rpath
     done
-    dists=(${dists[*]} $dist)
+    rpaths=(${rpaths[*]} ${rpath%/*})
 
     # update repository metadata
     OLDIFS=$IFS
     IFS=$'\n'
-    dists=(`echo "${dists[*]}" | sort -u`)
+    rpaths=(`echo "${rpaths[*]}" | sort -u`)
     IFS=$OLDIFS
 
-    for d in ${dists[*]}; do
-        cd $repo/$d
+    for d in ${rpaths[*]}; do
+        cd $rroot/$d
         createrepo .
     done
 fi
