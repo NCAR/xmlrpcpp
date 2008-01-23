@@ -24,10 +24,10 @@ source ../../../repo/scripts/repo_funcs.sh
 
 topdir=`get_rpm_topdir`
 rroot=`get_eol_repo_root`
-if [ "$mydist" == unknown ]; then
-    echo "unknown distribution"
-    exit 1
-fi
+
+pkg=xmlrpc++
+version=0.7
+fversion=`echo $version | sed 's/\./_/g'`
 
 doarm=false
 which arm-linux-gcc > /dev/null 2>&1 && doarm=true
@@ -35,76 +35,40 @@ which arm-linux-gcc > /dev/null 2>&1 && doarm=true
 doarmbe=false
 which armbe-linux-gcc > /dev/null 2>&1 && doarmbe=true
 
-version=0.7
-fversion=`echo $version | sed 's/\./_/g'`
-
 # untar the original source to /tmp, then create a patch by diffing
 # the original against our updates.
 tardest=/tmp/${0##*/}.$$
 [ -d $tardest ] || mkdir $tardest
 trap "{ rm -rf $tardest; exit; }" EXIT
 
-tar xzf xmlrpc++${version}.tar.gz -C $tardest
+tar xzf ${pkg}${version}.tar.gz -C $tardest
 
 # create the patch
-diff -pruN --exclude .svn $tardest/xmlrpc++${version} xmlrpcpp > $tardest/xmlrpc++${version}.patch
+diff -pruN --exclude .svn $tardest/${pkg}${version} xmlrpcpp > $tardest/${pkg}${version}.patch
 
 # copy to SOURCES
-rsync $tardest/*.patch xmlrpc++${version}.tar.gz $topdir/SOURCES
-
-rpmbuild -ba --clean xmlrpc++.spec
+rsync $tardest/*.patch ${pkg}${version}.tar.gz $topdir/SOURCES
 
 archs=""
 $doarm && archs="$archs arm"
 $doarmbe && archs="$archs armbe"
-rpmbuild --define "archs $archs" -ba --clean  xmlrpc++-cross.spec
 
-rpaths=()
+rpmbuild --define "archs $archs" -ba --clean  ${pkg}-cross.spec
+
+rpmbuild -ba --clean ${pkg}.spec
 
 if [ -d $rroot ]; then
-    # copy rpm for this distribution (fc8,el5,etc) to repositiory
-    rpms=($topdir/RPMS/i386/xmlrpc++-${version}*.rpm)
-    for r in ${rpms[*]}; do
-        rpath=`get_repo_path_from_rpm $r
-        [ -d $rroot/$rpath ] || mkdir -p $rroot/$rpath || exit
-        rsync $r $rroot/$rpath
-        rpaths=(${rpaths[*]} ${rpath%/*})
-    done
-    # copy source rpm for this distribution (fc8,el5,etc) to rroot
-    rpms=($topdir/SRPMS/xmlrpc++-${version}*.rpm)
-    for r in ${rpms[*]}; do
-        rpath=`get_repo_path_from_rpm $r
-        [ -d $rroot/$rpath ] || mkdir -p $rroot/$rpath || exit
-        rsync $r $rroot/$rpath
-        rpaths=(${rpaths[*]} ${rpath%/*})
-    done
+    # copy rpm for this architecture and source rpm to repositiory
+    arch=`uname -i`
+    rpms=($topdir/RPMS/$arch/${pkg}-${version}*.$arch.rpm \
+            $topdir/SRPMS/${pkg}-${version}*.src.rpm)
+    copy_rpms_to_eol_repo ${rpms[*]}
 
-    # copy cross rpms to ael repositiory
-    rpath=ael/1/i386
-    [ -d $rroot/$rpath ] || mkdir -p $rroot/$rpath || exit
-    rpms=($topdir/RPMS/i386/xmlrpc++-cross-*-${version}*.rpm)
-    for r in ${rpms[*]}; do
-        rsync $r $rroot/$rpath
-    done
-    rpaths=(${rpaths[*]} ${rpath%/*})
-
-    # copy source rpms to ael repositiory
-    rpath=ael/1/SRPMS
-    rpms=($topdir/SRPMS/xmlrpc++-cross-${version}*.src.rpm)
-    for r in ${rpms[*]}; do
-        rsync $r $rroot/$rpath
-    done
-    rpaths=(${rpaths[*]} ${rpath%/*})
-
-    # update repository metadata
-    OLDIFS=$IFS
-    IFS=$'\n'
-    rpaths=(`echo "${rpaths[*]}" | sort -u`)
-    IFS=$OLDIFS
-
-    for d in ${rpaths[*]}; do
-        cd $rroot/$d
-        createrepo .
-    done
+    # Only copy cross packages for i386
+    if [ $arch == i386 ]; then
+        rpms=($topdir/RPMS/i386/${pkg}-cross-*-${version}*.rpm \
+            $topdir/SRPMS/${pkg}-cross-${version}*.src.rpm)
+        copy_ael_rpms_to_eol_repo ${rpms[*]}
+    fi
 fi
 

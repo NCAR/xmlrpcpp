@@ -29,6 +29,7 @@ URL:        http://xmlrpcpp.sourceforge.net
 Source:     %{xname}%{version}.tar.gz
 Patch0:     %{xname}%{version}.patch
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch: i386
 
 %description
 XmlRpc++ is a C++ implementation of the XML-RPC protocol. It is based upon
