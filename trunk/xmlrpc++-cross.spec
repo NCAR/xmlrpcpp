@@ -19,6 +19,7 @@
 
 %define xname xmlrpc++
 
+Prefix: %{prefix}
 Summary:    A C++ implementation of the XML-RPC protocol build for %{archs}
 Name:       %{xname}-cross
 Version:    0.7
