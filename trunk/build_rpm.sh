@@ -20,7 +20,7 @@
 # set -x
 
 # Get the repo_funcs in eol/repo/scripts
-source ../../../repo/scripts/repo_funcs.sh
+source repo_scripts/repo_funcs.sh
 
 topdir=`get_rpm_topdir`
 rroot=`get_eol_repo_root`

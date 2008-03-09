@@ -2,7 +2,7 @@
 
 # Build debian package
 
-source ../../../repo/scripts/repo_funcs.sh
+source repo_scripts/repo_funcs.sh
 
 # Get the user's %_topdir
 topdir=`get_rpm_topdir`
