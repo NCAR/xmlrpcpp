@@ -2,6 +2,7 @@
 // Link against xmlrpc lib and whatever socket libs your system needs (ws2_32.lib 
 // on windows)
 #include "XmlRpc.h"
+#include <stdlib.h>
 #include <iostream>
 using namespace XmlRpc;
 

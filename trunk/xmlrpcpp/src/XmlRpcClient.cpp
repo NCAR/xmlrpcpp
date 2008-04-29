@@ -6,7 +6,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
+#include <strings.h>
 
 using namespace XmlRpc;
 
@@ -394,7 +395,7 @@ XmlRpcClient::parseResponse(XmlRpcValue& result)
   // Expect either <params><param>... or <fault>...
   if ((XmlRpcUtil::nextTagIs(PARAMS_TAG,_response,&offset) &&
        XmlRpcUtil::nextTagIs(PARAM_TAG,_response,&offset)) ||
-      XmlRpcUtil::nextTagIs(FAULT_TAG,_response,&offset) && (_isFault = true))
+      (XmlRpcUtil::nextTagIs(FAULT_TAG,_response,&offset) && (_isFault = true)))
   {
     if ( ! result.fromXml(_response, &offset)) {
       XmlRpcUtil::error("Error in XmlRpcClient::parseResponse: Invalid response value. Response:\n%s", _response.c_str());

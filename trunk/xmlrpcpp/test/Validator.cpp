@@ -4,6 +4,7 @@
 using namespace XmlRpc;
 
 #include <iostream>
+#include <stdlib.h>
 
 
 XmlRpcServer s;
