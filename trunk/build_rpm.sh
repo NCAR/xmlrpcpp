@@ -24,6 +24,7 @@ source repo_scripts/repo_funcs.sh
 
 topdir=`get_rpm_topdir`
 rroot=`get_eol_repo_root`
+sourcedir=`rpm --eval %_sourcedir`
 
 pkg=xmlrpc++
 version=0.7
@@ -47,15 +48,17 @@ tar xzf ${pkg}${version}.tar.gz -C $tardest
 diff -pruN --exclude .svn $tardest/${pkg}${version} xmlrpcpp > $tardest/${pkg}${version}.patch
 
 # copy to SOURCES
-rsync $tardest/*.patch ${pkg}${version}.tar.gz $topdir/SOURCES
+rsync $tardest/*.patch ${pkg}${version}.tar.gz $sourcedir
 
 archs=""
 $doarm && archs="$archs arm"
 $doarmbe && archs="$archs armbe"
 
-rpmbuild --define "archs $archs" -ba --clean  ${pkg}-cross.spec
+if [ -n "$archs" ]; then
+    rpmbuild --define "archs $archs" -ba --clean  ${pkg}-cross.spec || exit 1
+fi
 
-rpmbuild -ba --clean ${pkg}.spec
+rpmbuild -ba --clean ${pkg}.spec || exit 1
 
 if [ -d $rroot ]; then
     # copy rpm for this architecture and source rpm to repositiory
@@ -64,8 +67,8 @@ if [ -d $rroot ]; then
             $topdir/SRPMS/${pkg}-${version}*.src.rpm)
     copy_rpms_to_eol_repo ${rpms[*]}
 
-    # Only copy cross packages for i386
-    if [ $arch == i386 ]; then
+    # Only copy cross packages for i386, and only if they were built
+    if [ $arch == i386 -a -n "$archs" ]; then
         rpms=($topdir/RPMS/i386/${pkg}-cross-*-${version}*.rpm \
             $topdir/SRPMS/${pkg}-cross-${version}*.src.rpm)
         copy_ael_rpms_to_eol_repo ${rpms[*]}
