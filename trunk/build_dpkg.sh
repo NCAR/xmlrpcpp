@@ -23,9 +23,8 @@ trap "{ rm -rf $tmpdir; exit 0; }" EXIT
 
 # Create debian packages from RPMs
 # Where to put the debian packages.
-drepos=(${rroot%/*}/ael-dpkgs /opt/local/ael-dpkgs)
-[ -d $rroot ] && { [ -d $drepos[0] ] || mkdir -p $drepos[0]; }
-[ -d $drepos[1] ] || mkdir -p $drepos[1]
+dest=${DPKGDEST:-/opt/local/ael-dpkgs}
+[ -d $dest ] || mkdir -p $dest
 
 pdir=$tmpdir/$dpkg
 [ -d $pdir ] || mkdir -p $pdir
@@ -55,21 +54,17 @@ for arch in arm armbe; do
         echo "error, can't find the debian package"
         exit 1
     fi
-    for drepo in ${drepos[*]}; do
-        if [ -d $drepo ]; then
-            dfile=${deb[0]}
-            rsync $dfile $drepo || continue
-            dfile=$drepo/${dfile##*/}
-            verfile=${dfile%.deb}.ver
-            cksum $dfile > $verfile
-            dv=`awk '/^Version:/{print $2}' DEBIAN/control`
-            sv=`svnversion .`
-            echo "$dv $sv `date +%Y%m%d%H%M%S`" >> $verfile
-            echo "Debian package: $dfile"
-            echo "Version file: $verfile"
-            cat $verfile
-        fi
-    done
+    dfile=${deb[0]}
+    rsync -t $dfile $dest || continue
+    dfile=$dest/${dfile##*/}
+    verfile=${dfile%.deb}.ver
+    cksum $dfile > $verfile
+    dv=`awk '/^Version:/{print $2}' DEBIAN/control`
+    sv=`svnversion .`
+    echo "$dv $sv `date +%Y%m%d%H%M%S`" >> $verfile
+    echo "Debian package: $dfile"
+    echo "Version file: $verfile"
+    cat $verfile
     rm -rf $pdir/*
 done
 
