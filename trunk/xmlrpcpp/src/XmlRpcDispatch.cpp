@@ -4,6 +4,8 @@
 #include "XmlRpcUtil.h"
 
 #include <math.h>
+#include <errno.h>
+#include <string.h>
 #include <sys/timeb.h>
 
 #if defined(_WINDOWS)
@@ -111,7 +113,9 @@ XmlRpcDispatch::work(double timeout)
 
     if (nEvents < 0)
     {
-      XmlRpcUtil::error("Error in XmlRpcDispatch::work: error in select (%d).", nEvents);
+      XmlRpcUtil::error("Error in XmlRpcDispatch::work: error in select (%d) errstr=%s.",
+        nEvents,strerror(errno));
+      // if (errno == EINTR) continue;
       _inWork = false;
       return;
     }
