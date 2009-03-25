@@ -47,6 +47,9 @@ for arch in arm armbe; do
     rsync --exclude=.svn -a DEBIAN $pdir
     sed -e "s/^Architecture:.*/Architecture: $arch/" DEBIAN/control > $pdir/DEBIAN/control
 
+    # dpkg-deb doesn't like set gid bit set on DEBIAN directory
+    chmod -R g-s $pdir/DEBIAN
+
     fakeroot dpkg -b $pdir
     dpkg-name $tmpdir/${dpkg}.deb
     deb=($tmpdir/${dpkg}_*_${arch}.deb)
