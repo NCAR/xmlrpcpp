@@ -2,4 +2,9 @@
 
 [ "$1" == "configure" ] && ldconfig
 
+if ! [ -L /usr/lib/libxmlrpc++.so ]; then
+    cd /usr/lib
+    ln -s libxmlrpc++.so.* libxmlrpc++.so
+fi
+
 exit 0
