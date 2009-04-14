@@ -7,7 +7,7 @@ DEBUG		= -g
 GCCWARN		= -Wall -Wstrict-prototypes
 CXXFLAGS	= $(DEBUG) $(GCCWARN) $(OPTIMIZE) $(INCLUDES)
 
-LIB		= ../libXmlRpc.a
+LIB		= ../libXmlRpcpp.a
 
 # Add your system-dependent network libs here
 # Solaris: -lsocket -lnsl

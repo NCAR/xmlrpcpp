@@ -1,10 +1,12 @@
 #!/bin/sh
 
-[ "$1" == "configure" ] && ldconfig
+rm -f /usr/lib/libxmlrpc++.so*
 
-if ! [ -L /usr/lib/libxmlrpc++.so ]; then
+ldconfig
+
+if ! [ -L /usr/lib/libxmlrpcpp.so ]; then
     cd /usr/lib
-    ln -s libxmlrpc++.so.* libxmlrpc++.so
+    ln -s libxmlrpcpp.so.0.7 libxmlrpcpp.so
 fi
 
 exit 0

@@ -1,7 +1,7 @@
 Summary:    A C++ implementation of the XML-RPC protocol
 Name:   xmlrpc++
 Version:    0.7
-Release:    3%{?dist}
+Release:    4%{?dist}
 License:    GPL
 Group:      System Environment/Libraries
 URL:        http://xmlrpcpp.sourceforge.net
@@ -33,13 +33,22 @@ XML-RPC client and server support into C++ applications.
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libXmlRpc.a
-%{_libdir}/libxmlrpc++.so.%{version}
-%{_libdir}/libxmlrpc++.so
-%{_includedir}/xmlrpc++/
+%{_libdir}/libXmlRpcpp.a
+%{_libdir}/libxmlrpcpp.so.%{version}
+%{_libdir}/libxmlrpcpp.so
+%{_includedir}/xmlrpcpp/
+
+%pre
+# nuke old libraries and headers
+rm -rf %{_includedir}/xmlrpc++
+rm -f %{_libdir}/libXmlRpc.a 
+rm -f %{_libdir}/libxmlrpc++.so.%{version}
 
 %changelog
 
+* Mon Apr 23 2009 Gordon Maclean <maclean@ucar.edu> 0.7-4
+- Changed name of library to libxmlrpcpp.so to avoid conflict
+- with xmlrpc-c package. Header files in /usr/include/xmlrpcpp
 * Tue Apr 29 2008  Gary Granger  <granger@ucar.edu> 0.7-3
 	Compiler fixes for Fedora 9
 * Wed Apr 9 2008 Charlie Martin <martinc@ucar.edu> 0.7-2

@@ -17,8 +17,8 @@ MKDIR		= mkdir -p
 CP		= cp
 LN		= ln -s
 
-LIB		= ./libXmlRpc.a
-SO              = ./libxmlrpc++.so.$(VERSION)
+LIB		= ./libXmlRpcpp.a
+SO              = ./libxmlrpcpp.so.$(VERSION)
 
 # Add your system-dependent network libs here. These are
 # only used to build the tests (your application will need them too).
@@ -56,9 +56,9 @@ clean:
 install:
 		$(MKDIR) $(DESTDIR)$(prefix)/$(LIBDIR)
 		$(CP) $(SO) $(LIB) $(DESTDIR)$(prefix)/$(LIBDIR)
-		$(MKDIR) $(DESTDIR)$(prefix)/include/xmlrpc++
-		$(CP) src/*.h $(DESTDIR)$(prefix)/include/xmlrpc++
-		( cd $(DESTDIR)$(prefix)/$(LIBDIR); rm -f libxmlrpc++.so; $(LN) $(SO) libxmlrpc++.so )
+		$(MKDIR) $(DESTDIR)$(prefix)/include/xmlrpcpp
+		$(CP) src/*.h $(DESTDIR)$(prefix)/include/xmlrpcpp
+		( cd $(DESTDIR)$(prefix)/$(LIBDIR); rm -f libxmlrpcpp.so; $(LN) $(SO) libxmlrpcpp.so )
 		# Does not install tests right now	
 
 # Debian package make target, in case you want to manually build a package

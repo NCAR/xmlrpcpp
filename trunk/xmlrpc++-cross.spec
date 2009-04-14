@@ -23,7 +23,7 @@ Prefix: %{prefix}
 Summary:    A C++ implementation of the XML-RPC protocol build for %{archs}
 Name:       %{xname}-cross
 Version:    0.7
-Release:    1
+Release:    2
 License:    GPL
 Group:      Development/Libraries
 URL:        http://xmlrpcpp.sourceforge.net
@@ -105,15 +105,25 @@ for a in %{archs} ; do
     cat <<__EOF__ > files
 %defattr(-, root, root)
 %define __strip ${a}-linux-strip
-%{prefix}/${CROSS_TARGET}/include/xmlrpc++
-%{prefix}/${CROSS_TARGET}/lib/libXmlRpc.a
-%{prefix}/${CROSS_TARGET}/lib/libxmlrpc++.so.%{version}
-%{prefix}/${CROSS_TARGET}/lib/libxmlrpc++.so
+%{prefix}/${CROSS_TARGET}/include/xmlrpcpp
+%{prefix}/${CROSS_TARGET}/lib/libXmlRpcpp.a
+%{prefix}/${CROSS_TARGET}/lib/libxmlrpcpp.so.%{version}
+%{prefix}/${CROSS_TARGET}/lib/libxmlrpcpp.so
 __EOF__
 done
 
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
+
+%pre
+
+# nuke old libraries and headers
+for a in %{archs} ; do
+    CROSS_TARGET=${a}-%{cross_os}
+    rm -fr %{prefix}/${CROSS_TARGET}/include/xmlrpc++
+    rm -f %{prefix}/${CROSS_TARGET}/lib/libXmlRpc.a 
+    rm -f %{prefix}/${CROSS_TARGET}/lib/libxmlrpc++.so.%{version}
+done
 
 %define cross_arch arm
 %if %building_arch %{cross_arch}
@@ -125,7 +135,11 @@ done
 %files -n %{name}-%{cross_target} -f build_%{cross_target}/files
 %endif
 
+
 %changelog
 
+* Mon Apr 23 2009 Gordon Maclean <maclean@ucar.edu> 0.7-2
+- Changed name of library to libxmlrpcpp.so to avoid conflict
+- with xmlrpc-c package. Header files in /usr/include/xmlrpcpp
 * Mon Dec 24 2007 Gordon Maclean <maclean@ucar.edu> 0.7-1
 - RPM of cross compiled xmlrpc++ for %{archs}

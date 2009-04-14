@@ -40,7 +40,7 @@ for arch in arm armbe; do
 
     rpm2cpio $rpm | ( cd $pdir; cpio -idv )
     mkdir -p $pdir/usr/lib
-    rsync -l $pdir/opt/arcom/${arch}-linux/lib/libxmlrpc++.so* $pdir/usr/lib
+    rsync -l $pdir/opt/arcom/${arch}-linux/lib/libxmlrpcpp.so* $pdir/usr/lib
     rm -rf $pdir/opt
 
     # must sed the DEBIAN/control file to change architecture
