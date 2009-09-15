@@ -65,6 +65,7 @@ for arch in arm armbe; do
     dv=`awk '/^Version:/{print $2}' DEBIAN/control`
     sv=`svnversion .`
     echo "$dv $sv `date +%Y%m%d%H%M%S`" >> $verfile
+    echo "perm" >> $verfile
     echo "Debian package: $dfile"
     echo "Version file: $verfile"
     cat $verfile
