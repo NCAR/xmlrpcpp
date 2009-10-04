@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Build debian package
+# Build debian package by extracting pieces of the RPM
 
 source repo_scripts/repo_funcs.sh
 
@@ -21,7 +21,6 @@ shopt -s nullglob
 tmpdir=/tmp/${0##*/}_$$
 trap "{ rm -rf $tmpdir; exit 0; }" EXIT
 
-# Create debian packages from RPMs
 # Where to put the debian packages.
 dest=${DPKGDEST:-/opt/local/ael-dpkgs}
 [ -d $dest ] || mkdir -p $dest
@@ -32,9 +31,17 @@ pdir=$tmpdir/$dpkg
 for arch in arm armbe; do
 
     rpm=($topdir/RPMS/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
-    [ ${#rpm[*]} -eq 0 ] && \
-        rpm=($rroot/ael/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
-    [ ${#rpm[*]} -eq 0 ] && continue
+    if [ ${#rpm[*]} -eq 0 ]; then
+        echo "No RPM found on $topdir/RPMS/i386 for $pkg"
+        echo "Will try to build it"
+        thisdir=`dirname $0`
+        $thisdir/build_rpm.sh
+        rpm=($topdir/RPMS/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
+    fi
+    if [ ${#rpm[*]} -eq 0 ]; then
+        echo "No RPM found on $topdir/RPMS/i386 for $pkg"
+        exit 1
+    fi
     # get last rpm name in case there are multiple versions
     rpm=${rpm[${#rpm[*]}-1]}            # love that syntax!
 
