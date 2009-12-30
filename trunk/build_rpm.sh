@@ -63,7 +63,10 @@ rpmbuild -ba --clean ${pkg}.spec || exit 1
 if [ -d $rroot ]; then
     # copy rpm for this architecture and source rpm to repositiory
     arch=`uname -i`
-    rpms=($topdir/RPMS/$arch/${pkg}-${version}*.$arch.rpm \
+    archmask=$arch
+    [ "$arch" == i386 ] && archmask="i[35]86"
+    shopt -s nullglob
+    rpms=($topdir/RPMS/$archmask/${pkg}-${version}*.$archmask.rpm \
             $topdir/SRPMS/${pkg}-${version}*.src.rpm)
     copy_rpms_to_eol_repo ${rpms[*]}
 
