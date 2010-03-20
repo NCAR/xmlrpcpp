@@ -26,6 +26,7 @@ XML-RPC client and server support into C++ applications.
 %{__make} CXXFLAGS="${RPM_OPT_FLAGS} -fPIC" prefix=%{_prefix}
 
 %install
+%{__rm} -rf $RPM_BUILD_ROOT
 %{__make} install LIBDIR=%{_lib} prefix="$RPM_BUILD_ROOT%{_prefix}"
 
 %clean
@@ -43,6 +44,9 @@ XML-RPC client and server support into C++ applications.
 rm -rf %{_includedir}/xmlrpc++
 rm -f %{_libdir}/libXmlRpc.a 
 rm -f %{_libdir}/libxmlrpc++.so.%{version}
+
+%post
+ldconfig
 
 %changelog
 
