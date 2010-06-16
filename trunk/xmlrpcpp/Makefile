@@ -1,13 +1,15 @@
 # makefile written for gnu make
 CXX		= g++
 SRC		= ./src
-SHARED		= -shared
+SHARED		= -shared -Wl,-soname=libxmlrpcpp.so.0
 CPPFLAGS	= -I$(SRC)
 DEBUG		= -g
 OPTIMIZE	= -O2
 GCCWARN		= -Wall
 CXXFLAGS	= $(DEBUG) $(GCCWARN) $(OPTIMIZE) $(INCLUDES) -fPIC
-VERSION         = 0.7
+MAJOR		= 0
+MINOR		= 7
+VERSION         = $(MAJOR).$(MINOR)
 # Set LIBDIR to lib64 on 64 bit systems
 LIBDIR		= lib
 
@@ -58,7 +60,7 @@ install:
 		$(CP) $(SO) $(LIB) $(DESTDIR)$(prefix)/$(LIBDIR)
 		$(MKDIR) $(DESTDIR)$(prefix)/include/xmlrpcpp
 		$(CP) src/*.h $(DESTDIR)$(prefix)/include/xmlrpcpp
-		( cd $(DESTDIR)$(prefix)/$(LIBDIR); rm -f libxmlrpcpp.so; $(LN) $(SO) libxmlrpcpp.so )
+		( cd $(DESTDIR)$(prefix)/$(LIBDIR); rm -f libxmlrpcpp.so libxmlrpcpp.so.$(MAJOR); $(LN) $(SO) libxmlrpcpp.so;  $(LN) $(SO) libxmlrpcpp.so.$(MAJOR); )
 		# Does not install tests right now	
 
 # Debian package make target, in case you want to manually build a package

@@ -1,7 +1,7 @@
 Summary:    A C++ implementation of the XML-RPC protocol
 Name:   xmlrpc++
 Version:    0.7
-Release:    4%{?dist}
+Release:    5%{?dist}
 License:    GPL
 Group:      System Environment/Libraries
 URL:        http://xmlrpcpp.sourceforge.net
@@ -35,8 +35,8 @@ XML-RPC client and server support into C++ applications.
 %files
 %defattr(-,root,root,-)
 %{_libdir}/libXmlRpcpp.a
-%{_libdir}/libxmlrpcpp.so.%{version}
 %{_libdir}/libxmlrpcpp.so
+%{_libdir}/libxmlrpcpp.so.*
 %{_includedir}/xmlrpcpp/
 
 %pre
@@ -49,7 +49,12 @@ rm -f %{_libdir}/libxmlrpc++.so.%{version}
 ldconfig
 
 %changelog
-
+* Tue Jun 15 2010 Gordon Maclean <maclean@ucar.edu> 0.7-5
+- When building libxmlrpcpp.so.0.7 set the -soname to libxmlrpcpp.so.0.
+- Useful doc: http://www.ibm.com/developerworks/library/l-shobj
+- objdump -p dumps the SONAME, and by convention it should be libname.so.MAJOR
+- When rpm builds dependencies (find-requires, find-provides) of shared
+- libraries it uses the SONAME.
 * Mon Apr 23 2009 Gordon Maclean <maclean@ucar.edu> 0.7-4
 - Changed name of library to libxmlrpcpp.so to avoid conflict
 - with xmlrpc-c package. Header files in /usr/include/xmlrpcpp
