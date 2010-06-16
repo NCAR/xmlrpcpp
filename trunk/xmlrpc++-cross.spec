@@ -23,7 +23,7 @@ Prefix: %{prefix}
 Summary:    A C++ implementation of the XML-RPC protocol build for %{archs}
 Name:       %{xname}-cross
 Version:    0.7
-Release:    2
+Release:    3
 License:    GPL
 Group:      Development/Libraries
 URL:        http://xmlrpcpp.sourceforge.net
@@ -137,6 +137,9 @@ done
 
 %changelog
 
+* Wed Jun 16 2010 Gordon Maclean <maclean@ucar.edu> 0.7-3
+- New verson creates libxmlrpcpp.so.0.7 and
+- links libxmlrpcpp.so and libxmlrpcpp.so.0
 * Mon Apr 23 2009 Gordon Maclean <maclean@ucar.edu> 0.7-2
 - Changed name of library to libxmlrpcpp.so to avoid conflict
 - with xmlrpc-c package. Header files in /usr/include/xmlrpcpp
