@@ -106,7 +106,7 @@ for a in %{archs} ; do
 %define __strip ${a}-linux-strip
 %{prefix}/${CROSS_TARGET}/include/xmlrpcpp
 %{prefix}/${CROSS_TARGET}/lib/libXmlRpcpp.a
-%{prefix}/${CROSS_TARGET}/lib/libxmlrpcpp.so.%{version}
+%{prefix}/${CROSS_TARGET}/lib/libxmlrpcpp.so.*
 %{prefix}/${CROSS_TARGET}/lib/libxmlrpcpp.so
 __EOF__
 done
