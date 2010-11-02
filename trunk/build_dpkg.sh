@@ -33,13 +33,19 @@ for arch in arm armbe; do
     rpm=($topdir/RPMS/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
     if [ ${#rpm[*]} -eq 0 ]; then
         echo "No RPM found on $topdir/RPMS/i386 for $pkg"
-        echo "Will try to build it"
-        thisdir=`dirname $0`
-        $thisdir/build_rpm.sh
-        rpm=($topdir/RPMS/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
+        rpm=($rroot/ael/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
+        if [ ${#rpm[*]} -eq 0 ]; then
+            echo "No RPM found on $rroot/ael/i386 for $pkg"
+            echo "Will try to build it"
+            thisdir=`dirname $0`
+            $thisdir/build_rpm.sh
+            rpm=($topdir/RPMS/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
+            [ ${#rpm[*]} -eq 0 ] &&
+                rpm=($rroot/ael/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
+        fi
     fi
     if [ ${#rpm[*]} -eq 0 ]; then
-        echo "No RPM found on $topdir/RPMS/i386 for $pkg"
+        echo "No RPM found on $topdir/RPMS/i386 or $rroot/ael/i386 for $pkg"
         exit 1
     fi
     # get last rpm name in case there are multiple versions
@@ -57,7 +63,10 @@ for arch in arm armbe; do
     # dpkg-deb doesn't like set gid bit set on DEBIAN directory
     chmod -R g-s $pdir/DEBIAN
 
-    fakeroot dpkg -b $pdir
+    # AEL dpkg executable is 32 bit. On 64 bit systems one needs to install
+    # 32 bit fakeroot libraries from fakeroot.i686 and fakeroot-libs.i686,
+    # then set LD_LIBRARY_PATH to the 32 bit libs.
+    LD_LIBRARY_PATH=/usr/lib fakeroot dpkg -b $pdir
     dpkg-name $tmpdir/${dpkg}.deb
     deb=($tmpdir/${dpkg}_*_${arch}.deb)
     if [ ${#deb[*]} -eq 0 ]; then
@@ -67,8 +76,9 @@ for arch in arm armbe; do
     dfile=${deb[0]}
     rsync -t $dfile $dest || continue
     dfile=$dest/${dfile##*/}
+
     verfile=${dfile%.deb}.ver
-    cksum $dfile > $verfile
+    cksum $dfile > $verfile || exit 1
     dv=`awk '/^Version:/{print $2}' DEBIAN/control`
     sv=`svnversion .`
     echo "$dv $sv `date +%Y%m%d%H%M%S`" >> $verfile
@@ -76,6 +86,7 @@ for arch in arm armbe; do
     echo "Debian package: $dfile"
     echo "Version file: $verfile"
     cat $verfile
+    echo "Installed ${dfile##*/} and ${verfile##*/} to $dest"
     rm -rf $pdir/*
 done
 
