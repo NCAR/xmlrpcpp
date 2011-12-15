@@ -27,7 +27,7 @@ SO              = ./libxmlrpcpp.so.$(VERSION)
 # Linux: none
 # Solaris: -lsocket -lnsl
 #SYSTEMLIBS	= -lsocket -lnsl
-SYSTEMLIBS	=
+SYSTEMLIBS	= -lpthread
 LDLIBS		= $(LIB) $(SYSTEMLIBS)
 
 OBJ		= $(SRC)/XmlRpcClient.o $(SRC)/XmlRpcDispatch.o \

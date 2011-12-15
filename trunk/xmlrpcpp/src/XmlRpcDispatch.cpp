@@ -6,6 +6,7 @@
 #include <math.h>
 #include <errno.h>
 #include <string.h>
+#include <signal.h>
 #include <sys/timeb.h>
 
 #if defined(_WINDOWS)
@@ -29,6 +30,7 @@ XmlRpcDispatch::XmlRpcDispatch()
   _endTime = -1.0;
   _doClear = false;
   _inWork = false;
+  _signal = SIGUSR1;
 }
 
 
@@ -80,6 +82,17 @@ XmlRpcDispatch::work(double timeout)
   _doClear = false;
   _inWork = true;
 
+  // add _signal to the set of blocked signals.
+  sigset_t sigmask, newmask;
+  sigemptyset(&newmask);
+  sigaddset(&newmask,_signal);
+
+  // get the previous signal mask
+  pthread_sigmask(SIG_BLOCK,&newmask,&sigmask);
+
+  // remove _signal from the mask passed to pselect
+  sigdelset(&sigmask,_signal);
+
   // Only work while there is something to monitor
   while (_sources.size() > 0) {
 
@@ -102,13 +115,13 @@ XmlRpcDispatch::work(double timeout)
     // Check for events
     int nEvents;
     if (timeout < 0.0)
-      nEvents = select(maxFd+1, &inFd, &outFd, &excFd, NULL);
+      nEvents = pselect(maxFd+1, &inFd, &outFd, &excFd, NULL,&sigmask);
     else 
     {
-      struct timeval tv;
+      struct timespec tv;
       tv.tv_sec = (int)floor(timeout);
-      tv.tv_usec = ((int)floor(1000000.0 * (timeout-floor(timeout)))) % 1000000;
-      nEvents = select(maxFd+1, &inFd, &outFd, &excFd, &tv);
+      tv.tv_nsec = ((int)floor(1000000000.0 * (timeout-floor(timeout)))) % 1000000000;
+      nEvents = pselect(maxFd+1, &inFd, &outFd, &excFd, &tv,&sigmask);
     }
 
     if (nEvents < 0)

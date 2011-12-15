@@ -76,6 +76,12 @@ namespace XmlRpc {
     //! Remove a connection from the dispatcher
     virtual void removeConnection(XmlRpcServerConnection*);
 
+    //! Set the value for the signal to be checked in the work method.
+    void setSignal(int val) 
+    {
+        _disp.setSignal(val);
+    }
+
   protected:
 
     //! Accept a client connection request

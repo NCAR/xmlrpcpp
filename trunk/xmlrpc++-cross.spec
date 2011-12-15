@@ -23,7 +23,7 @@ Prefix: %{prefix}
 Summary:    A C++ implementation of the XML-RPC protocol build for %{archs}
 Name:       %{xname}-cross
 Version:    0.7
-Release:    3
+Release:    4
 License:    GPL
 Group:      Development/Libraries
 URL:        http://xmlrpcpp.sourceforge.net
@@ -137,6 +137,10 @@ done
 
 %changelog
 
+* Mon Aug 21 2011 Gordon Maclean <maclean@ucar.edu> 0.7-4
+- XmlRpcDispatch::work calls pselect with SIGUSR1 unblocked.
+- If SIGUSR1 is otherwise blocked in the thread, then it will
+- be caught by the pselect.
 * Wed Jun 16 2010 Gordon Maclean <maclean@ucar.edu> 0.7-3
 - New verson creates libxmlrpcpp.so.0.7 and
 - links libxmlrpcpp.so and libxmlrpcpp.so.0

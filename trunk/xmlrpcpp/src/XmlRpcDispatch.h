@@ -56,6 +56,13 @@ namespace XmlRpc {
     //! Clear all sources from the monitored sources list. Sources are closed.
     void clear();
 
+    //! Set the value of the signal that is checked in the work method.
+    //! Default SIGUSR1.
+    void setSignal(int val)
+    {
+        _signal = val;
+    }
+
   protected:
 
     // helper
@@ -81,6 +88,9 @@ namespace XmlRpc {
 
     bool _doClear;
     bool _inWork;
+
+    // what signal to block and then unblock with pselect in the work method.
+    int _signal;
 
   };
 } // namespace XmlRpc

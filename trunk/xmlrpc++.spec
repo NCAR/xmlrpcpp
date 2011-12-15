@@ -1,7 +1,7 @@
 Summary:    A C++ implementation of the XML-RPC protocol
 Name:   xmlrpc++
 Version:    0.7
-Release:    5%{?dist}
+Release:    6%{?dist}
 License:    GPL
 Group:      System Environment/Libraries
 URL:        http://xmlrpcpp.sourceforge.net
@@ -29,6 +29,21 @@ XML-RPC client and server support into C++ applications.
 %{__rm} -rf $RPM_BUILD_ROOT
 %{__make} install LIBDIR=%{_lib} prefix="$RPM_BUILD_ROOT%{_prefix}"
 
+install -d $RPM_BUILD_ROOT%{_libdir}/pkgconfig
+
+cat << \EOD > $RPM_BUILD_ROOT%{_libdir}/pkgconfig/xmlrpc++.pc
+prefix=/usr
+exec_prefix=/usr
+libdir=%{_libdir}
+includedir=/usr/include
+
+Name: xmlrpc++
+Description: A C++ implementation of the XML-RPC protocol
+Version: 0.7
+Libs: -lxmlrpcpp
+Cflags:
+EOD
+
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
 
@@ -38,6 +53,7 @@ XML-RPC client and server support into C++ applications.
 %{_libdir}/libxmlrpcpp.so
 %{_libdir}/libxmlrpcpp.so.*
 %{_includedir}/xmlrpcpp/
+%config %{_libdir}/pkgconfig/xmlrpc++.pc
 
 %pre
 # nuke old libraries and headers
@@ -49,6 +65,11 @@ rm -f %{_libdir}/libxmlrpc++.so.%{version}
 ldconfig
 
 %changelog
+* Mon Dec  5 2011 Gordon Maclean <maclean@ucar.edu> 0.7-6
+- XmlRpcDispatch::work calls pselect with SIGUSR1 unblocked.
+- If SIGUSR1 is otherwise blocked in the thread, then it will
+- be caught by the pselect.
+- Added pkg-config file.
 * Tue Jun 15 2010 Gordon Maclean <maclean@ucar.edu> 0.7-5
 - When building libxmlrpcpp.so.0.7 set the -soname to libxmlrpcpp.so.0.
 - Useful doc: http://www.ibm.com/developerworks/library/l-shobj

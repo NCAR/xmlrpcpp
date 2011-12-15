@@ -32,7 +32,10 @@ for arch in arm armbe; do
 
     rpm=($topdir/RPMS/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
     if [ ${#rpm[*]} -eq 0 ]; then
-        echo "No RPM found on $topdir/RPMS/i386 for $pkg"
+        rpm=($topdir/RPMS/x86_64/${pkg}-${arch}-linux-${version}*.x86_64.rpm)
+    fi
+    if [ ${#rpm[*]} -eq 0 ]; then
+        echo "No RPM found on $topdir/RPMS/ for $pkg"
         rpm=($rroot/ael/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
         if [ ${#rpm[*]} -eq 0 ]; then
             echo "No RPM found on $rroot/ael/i386 for $pkg"
