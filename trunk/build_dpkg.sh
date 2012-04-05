@@ -22,7 +22,7 @@ tmpdir=/tmp/${0##*/}_$$
 trap "{ rm -rf $tmpdir; exit 0; }" EXIT
 
 # Where to put the debian packages.
-dest=${DPKGDEST:-/opt/local/ael-dpkgs}
+dest=${DPKGDEST:-/opt/ael-dpkgs}
 [ -d $dest ] || mkdir -p $dest
 
 pdir=$tmpdir/$dpkg
