@@ -68,6 +68,11 @@ archs=""
 $doarm && archs="$archs arm"
 $doarmbe && archs="$archs armbe"
 
+# not sure why, but the rpath check in rpmbuild hangs forever on shiraz
+if [ $(hostname) == shiraz.eol.ucar.edu ]; then
+    export QA_SKIP_RPATHS=true
+fi
+
 if [ -n "$archs" ]; then
     rpmbuild --define "archs $archs" -ba --clean  ${pkg}-cross.spec || exit 1
 fi

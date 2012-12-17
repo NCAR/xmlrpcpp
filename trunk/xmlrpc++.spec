@@ -41,7 +41,7 @@ Name: xmlrpcpp
 Description: A C++ implementation of the XML-RPC protocol
 Version: 0.7
 Libs: -lxmlrpcpp
-Cflags:
+Cflags: -I${includedir}/xmlrpcpp
 EOD
 
 %clean
