@@ -74,10 +74,10 @@ if [ $(hostname) == shiraz.eol.ucar.edu ]; then
 fi
 
 if [ -n "$archs" ]; then
-    rpmbuild --define "archs $archs" -ba --clean  ${pkg}-cross.spec || exit 1
+    rpmbuild --define "archs $archs" --define "debug_package %{nil}" -ba --clean  ${pkg}-cross.spec || exit 1
 fi
 
-rpmbuild -ba --clean ${pkg}.spec || exit 1
+rpmbuild -ba --clean --define "debug_package %{nil}" ${pkg}.spec || exit 1
 
 if $doinstall; then
 
