@@ -54,7 +54,8 @@ get_release()
     echo $v
 }
 
-release=$(get_release)
+# jenkins sets SVN_REVISION
+release=${SVN_REVISION:=$(get_release)}
 doarm=false
 which arm-linux-gcc > /dev/null 2>&1 && doarm=true
 
