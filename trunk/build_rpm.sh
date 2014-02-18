@@ -22,7 +22,8 @@
 # Get the repo_funcs in eol/repo/scripts
 source repo_scripts/repo_funcs.sh
 
-topdir=`get_rpm_topdir`
+topdir=${TOPDIR:-`get_rpm_topdir`}
+
 rroot=`get_eol_repo_root`
 
 doinstall=false
@@ -38,12 +39,21 @@ if ! $doinstall; then
     echo "-i not specified, RPM will not be installed in $rroot"
 fi
 
-sourcedir=`rpm --eval %_sourcedir`
+sourcedir=$(rpm --define "_topdir $topdir" --eval %_sourcedir)
 
 pkg=xmlrpc++
 version=0.7
 fversion=`echo $version | sed 's/\./_/g'`
 
+get_release() 
+{
+    # discard M,S,P, mixed versions
+    v=$(svnversion . | sed 's/:.*$//' | sed s/[A-Z]//g)
+    [ $v == exported ] && v=1
+    echo $v
+}
+
+release=$(get_release)
 doarm=false
 which arm-linux-gcc > /dev/null 2>&1 && doarm=true
 
@@ -52,8 +62,7 @@ which armbe-linux-gcc > /dev/null 2>&1 && doarmbe=true
 
 # untar the original source to /tmp, then create a patch by diffing
 # the original against our updates.
-tardest=/tmp/${0##*/}.$$
-[ -d $tardest ] || mkdir $tardest
+tardest=$(mktemp -d /tmp/${0##*/}_XXXXXX)
 trap "{ rm -rf $tardest; exit; }" EXIT
 
 tar xzf ${pkg}${version}.tar.gz -C $tardest
@@ -69,15 +78,23 @@ $doarm && archs="$archs arm"
 $doarmbe && archs="$archs armbe"
 
 # not sure why, but the rpath check in rpmbuild hangs forever on shiraz
-if [ $(hostname) == shiraz.eol.ucar.edu ]; then
-    export QA_SKIP_RPATHS=true
-fi
+# if [ $(hostname) == shiraz.eol.ucar.edu ]; then
+#     export QA_SKIP_RPATHS=true
+# fi
 
 if [ -n "$archs" ]; then
-    rpmbuild --define "archs $archs" --define "debug_package %{nil}" -ba --clean  ${pkg}-cross.spec || exit 1
+    rpmbuild --define "archs $archs" \
+        --define "debug_package %{nil}" \
+        --define "release $release"  \
+        --define "_topdir $topdir"  \
+        -ba --clean  ${pkg}-cross.spec || exit 1
 fi
 
-rpmbuild -ba --clean --define "debug_package %{nil}" ${pkg}.spec || exit 1
+rpmbuild -ba --clean \
+    --define "debug_package %{nil}" \
+    --define "release $release"  \
+    --define "_topdir $topdir"  \
+    ${pkg}.spec || exit 1
 
 if $doinstall; then
 

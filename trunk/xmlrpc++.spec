@@ -1,7 +1,7 @@
 Summary:    A C++ implementation of the XML-RPC protocol
 Name:   xmlrpc++
 Version:    0.7
-Release:    7%{?dist}
+Release:    %{release}%{?dist}
 License:    GPL
 Group:      System Environment/Libraries
 URL:        http://xmlrpcpp.sourceforge.net
