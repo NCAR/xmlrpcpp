@@ -23,7 +23,7 @@ Prefix: %{prefix}
 Summary:    A C++ implementation of the XML-RPC protocol build for %{archs}
 Name:       %{xname}-cross
 Version:    0.7
-Release:    4
+Release:    %{release}
 License:    GPL
 Group:      Development/Libraries
 URL:        http://xmlrpcpp.sourceforge.net
