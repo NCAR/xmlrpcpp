@@ -40,6 +40,7 @@ if ! $doinstall; then
 fi
 
 sourcedir=$(rpm --define "_topdir $topdir" --eval %_sourcedir)
+[ -d $sourcedir ] || mkdir -p $sourcedir
 
 pkg=xmlrpc++
 version=0.7
