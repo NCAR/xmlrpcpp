@@ -30,29 +30,28 @@ pdir=$tmpdir/$dpkg
 
 for arch in arm armbe; do
 
-    rpm=($topdir/RPMS/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
-    if [ ${#rpm[*]} -eq 0 ]; then
-        rpm=($topdir/RPMS/x86_64/${pkg}-${arch}-linux-${version}*.x86_64.rpm)
-    fi
+    rpm=($topdir/RPMS/noarch/${pkg}-${arch}-linux-${version}*.noarch.rpm)
     if [ ${#rpm[*]} -eq 0 ]; then
         echo "No RPM found on $topdir/RPMS/ for $pkg"
-        rpm=($rroot/ael/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
+        rpm=($rroot/ael/noarch/${pkg}-${arch}-linux-${version}*.noarch.rpm)
         if [ ${#rpm[*]} -eq 0 ]; then
-            echo "No RPM found on $rroot/ael/i386 for $pkg"
+            echo "No RPM found on $rroot/ael/noarch for $pkg"
             echo "Will try to build it"
             thisdir=`dirname $0`
             $thisdir/build_rpm.sh
-            rpm=($topdir/RPMS/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
+            rpm=($topdir/RPMS/noarch/${pkg}-${arch}-linux-${version}*.noarch.rpm)
             [ ${#rpm[*]} -eq 0 ] &&
-                rpm=($rroot/ael/i386/${pkg}-${arch}-linux-${version}*.i386.rpm)
+                rpm=($rroot/ael/noarch/${pkg}-${arch}-linux-${version}*.noarch.rpm)
         fi
     fi
     if [ ${#rpm[*]} -eq 0 ]; then
-        echo "No RPM found on $topdir/RPMS/i386 or $rroot/ael/i386 for $pkg"
+        echo "No RPM found on $topdir/RPMS/noarch or $rroot/ael/noarch for $pkg"
         exit 1
     fi
     # get last rpm name in case there are multiple versions
     rpm=${rpm[${#rpm[*]}-1]}            # love that syntax!
+
+    echo "Converting $rpm to debian package"
 
     rpm2cpio $rpm | ( cd $pdir; cpio -idv )
     mkdir -p $pdir/usr/lib
