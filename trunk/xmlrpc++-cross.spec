@@ -78,7 +78,7 @@ for a in %{archs} ; do
             cflags="-O2 -march=armv5te"
             ;;
     armbe)
-            cflags="-O2 -march=armv4t"
+            cflags="-O2 -march=armv5te"
             ;;
     *)
             echo "architecture $a not supported"
