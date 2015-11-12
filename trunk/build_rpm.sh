@@ -111,7 +111,7 @@ if $doinstall; then
         copy_rpms_to_eol_repo ${rpms[*]}
 
         # Only copy cross packages for i386, and only if they were built
-        if [ $arch == i386 -a -n "$archs" ]; then
+        if [ -n "$archs" ]; then
             rpms=($topdir/RPMS/i386/${pkg}-cross-*-${version}*.rpm \
                 $topdir/SRPMS/${pkg}-cross-${version}*.src.rpm)
             copy_ael_rpms_to_eol_repo ${rpms[*]}
