@@ -85,7 +85,7 @@ $doarmbe && archs="$archs armbe"
 # fi
 
 if [ -n "$archs" ]; then
-    rpmbuild --define "archs $archs" \
+    rpmbuild --define "archs $archs" --target i386 \
         --define "debug_package %{nil}" \
         --define "release $release"  \
         --define "_topdir $topdir"  \
