@@ -1,4 +1,6 @@
 #!/usr/bin/make -f
+
+
 # See debhelper(7) (uncomment to enable)
 # output every command that modifies files on the build system.
 DH_VERBOSE = 1
@@ -17,23 +19,30 @@ export DEB_CXXFLAGS_MAINT_APPEND  = -Wall -pedantic -fPIC
 # package maintainers to append LDFLAGS
 #export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
+ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
+    $(info native build)
+    CC=gcc
+    CXX=g++
+    LIBDIR=lib
+else
+    $(info cross build)
+    CC=$(DEB_HOST_GNU_TYPE)-gcc
+    CXX=$(DEB_HOST_GNU_TYPE)-g++
+    LIBDIR=lib/$(DEB_HOST_GNU_TYPE)
+endif
 
 # main packaging script based on dh7 syntax
 %:
 	dh $@ 
 
 override_dh_auto_build:
-	dh_auto_build -- prefix=/usr
+	dh_auto_build -- CXX=$(CXX) prefix=/usr
 
 override_dh_auto_install:
-	dh_auto_install -- LIBDIR=lib prefix=/usr
+	dh_auto_install -- CXX=$(CXX) LIBDIR=$(LIBDIR) prefix=/usr
 
 # debmake generated override targets
 # This is example for Cmake (See http://bugs.debian.org/641051 )
 #override_dh_auto_configure:
 #	dh_auto_configure -- \
 #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
-
-
-
-

@@ -1,5 +1,5 @@
 # makefile written for gnu make
-CXX		= g++
+CXX		?= g++
 SRC		= ./src
 SHARED		= -shared -Wl,-soname=libxmlrpcpp.so.0
 CPPFLAGS	= -I$(SRC)
