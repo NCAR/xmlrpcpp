@@ -9,6 +9,7 @@ if [ $# -eq 0 ]; then
 fi
 
 dest=$1
+[[ $dest == /* ]] || dest=$PWD/dest
 
 pkg=xmlrpc++
 version=0.7
@@ -66,5 +67,4 @@ sed -e 's/0\.7-1/0\.7/' ${pkg}_tmp/DEBIAN/symbols \
 
 rsync *.build *.changes *.deb *.debian.tar.xz *.dsc *.orig.tar.gz *.symbols $dest
 
-echo $tmpdir
-exit
+# echo $tmpdir
