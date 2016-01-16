@@ -9,7 +9,7 @@ if [ $# -eq 0 ]; then
 fi
 
 dest=$1
-[[ $dest == /* ]] || dest=$PWD/dest
+[[ $dest == /* ]] || dest=$PWD/$dest
 
 pkg=xmlrpc++
 version=0.7
@@ -64,7 +64,6 @@ dpkg-deb -R ${pkg}_${version}-*_amd64.deb ${pkg}_tmp
 sed -e 's/0\.7-1/0\.7/' ${pkg}_tmp/DEBIAN/symbols \
     > xmlrpc++.symbols
 
-
-rsync *.build *.changes *.deb *.debian.tar.xz *.dsc *.orig.tar.gz *.symbols $dest
+rsync -v *.build *.changes *.deb *.debian.tar.xz *.dsc *.orig.tar.gz *.symbols $dest
 
 # echo $tmpdir
