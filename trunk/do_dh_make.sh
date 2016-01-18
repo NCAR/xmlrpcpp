@@ -25,5 +25,7 @@ cd $tmpdir/${pkg}-${version}
 
 dh_make -f ../${pkg}_${version}.orig.tar.gz
 
+dh_makeshlibs -f ../${pkg}_${version}.orig.tar.gz
+
 echo $tmpdir
 exit

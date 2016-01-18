@@ -16,5 +16,6 @@ Description: Old xmlrpc++ library
 Package: xmlrpc++
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
 Description: Old xmlrpc++ library
  Needed until we upgrade the DSMs to Debian8 and can convert to libxmlrpc-c

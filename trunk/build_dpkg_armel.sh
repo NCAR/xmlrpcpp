@@ -45,9 +45,9 @@ rsync -a $pkg/debian $tmpdir/${pkg}-${version}
 cd $tmpdir/${pkg}-${version}
 
 # different debian files for armel
-mv debian/xmlrpc++.install-armel debian/xmlrpc++.install
-mv debian/xmlrpc++-dev.install-armel debian/xmlrpc++-dev.install
-mv debian/xmlrpc++.symbols-armel debian/xmlrpc++.symbols
+# mv debian/xmlrpc++.install-armel debian/xmlrpc++.install
+# mv debian/xmlrpc++-dev.install-armel debian/xmlrpc++-dev.install
+# mv debian/xmlrpc++.symbols-armel debian/xmlrpc++.symbols
 
 # import diff into one patch with quilt
 export QUILT_PATCHES=debian/patches
@@ -63,7 +63,7 @@ quilt import ../$pkg.patch
 # -us: do not sign the source package
 # -uc: do not sign the .changes file
 export CC=arm-linux-gnueabi-gcc
-debuild -us -uc -a armel
+debuild -aarmel -us -uc
 
 # to grab the symbols from the built package:
 cd ..
