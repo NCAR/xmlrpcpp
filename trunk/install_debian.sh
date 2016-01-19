@@ -2,31 +2,29 @@
 
 # install a package to a debian repository
 
+repo=/net/www/docs/software/debian
+repo=/net/ftp/pub/temp/users/maclean/debian
+
+if [ $# -lt 1 ]; then
+    echo "Usage: ${0##*/} changes_file [repo]"
+    echo "default repo=$repo"
+    exit 1
+fi
+
 # debian terms used by reprepro:
 # component: main contrib non-free
 # type: dsc|deb|udeb
 # codename: jessie
 
-# set -x
-
-pkg=$1
-pdir=${pkg%/*}
-pnodir=${pkg##*/}
-pnodeb=${pnodir%.deb}
-pnoarch=${pnodeb%_*}
-pnover=${pnoarch%_*}
-
-repo=/net/www/docs/software/debian
+changes=$1
 [ $# -gt 1 ] && repo=$2
 
-# reprepro -V -b $repo includedeb jessie $pkg.deb
+# get list of binary packages from .changes file
+pkgs=$(grep "^Binary:" $changes | sed -e s/Binary://)
 
-# reprepro -V -b $repo includedsc jessie $pkg.dsc
+archs=$(grep "^Architecture:" $changes | sed -e 's/Architecture: *//' | tr \  "|")
 
-# reprepro -V -b $repo -A "armel|source" include jessie $pkg.changes
+reprepro -V -b $repo -A "$archs" remove jessie $pkgs
 
-reprepro -V -b $repo -A "armel|source" list jessie $pnover
-reprepro -V -b $repo -A "armel|source" remove jessie $pnover
-
-reprepro -V -b $repo -A "armel|source" include jessie $pdir/$pnodeb.changes
+reprepro -V -b $repo -A "$archs" include jessie $changes
 

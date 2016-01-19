@@ -2,9 +2,10 @@
 
 # Build source and binary debian packages of xmlrpc++
 
-if [ $# -eq 0 ]; then
-    echo "Usage: ${0##*/} destination"
+if [ $# -lt 2 ]; then
+    echo "Usage: ${0##*/} destination arch"
     echo "destination: where you want the .deb packages and associated stuff"
+    echo "arch: amd64 or armel"
     exit 1
 fi
 
@@ -12,6 +13,8 @@ dest=$1
 [ -d $dest ] || mkdir -p $dest
 rm -f $dest/*
 [[ $dest == /* ]] || dest=$PWD/$dest
+
+arch=$2
 
 pkg=xmlrpc++
 version=0.7
@@ -57,11 +60,14 @@ quilt import ../$pkg.patch
 
 # -us: do not sign the source package
 # -uc: do not sign the .changes file
-debuild -us -uc
+[ "$arch" == armel ] && export CC=arm-linux-gnueabi-gcc
+debuild -a$arch -k'<eol-prog@eol.ucar.edu>'
+
+# ls debian
 
 # to grab the symbols from the built package:
 cd ..
-dpkg-deb -R ${pkg}_${version}-*_amd64.deb ${pkg}_tmp
+dpkg-deb -R ${pkg}_${version}-*_${arch}.deb ${pkg}_tmp
 sed -e 's/0\.7-1/0\.7/' ${pkg}_tmp/DEBIAN/symbols \
     > xmlrpc++.symbols
 
