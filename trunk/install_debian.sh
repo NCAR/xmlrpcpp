@@ -24,7 +24,7 @@ pkgs=$(grep "^Binary:" $changes | sed -e s/Binary://)
 
 archs=$(grep "^Architecture:" $changes | sed -e 's/Architecture: *//' | tr \  "|")
 
-reprepro -V -b $repo -A "$archs" remove jessie $pkgs
+flock $repo reprepro -V -b $repo -A "$archs" remove jessie $pkgs
 
-reprepro -V -b $repo -A "$archs" include jessie $changes
+flock $repo reprepro -V -b $repo -A "$archs" include jessie $changes
 
