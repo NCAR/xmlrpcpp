@@ -29,21 +29,6 @@ XML-RPC client and server support into C++ applications.
 %{__rm} -rf $RPM_BUILD_ROOT
 %{__make} install LIBDIR=%{_lib} prefix="$RPM_BUILD_ROOT%{_prefix}"
 
-install -d $RPM_BUILD_ROOT%{_libdir}/pkgconfig
-
-cat << \EOD > $RPM_BUILD_ROOT%{_libdir}/pkgconfig/xmlrpcpp.pc
-prefix=/usr
-exec_prefix=/usr
-libdir=%{_libdir}
-includedir=/usr/include
-
-Name: xmlrpcpp
-Description: A C++ implementation of the XML-RPC protocol
-Version: 0.7
-Libs: -lxmlrpcpp
-Cflags: -I${includedir}/xmlrpcpp
-EOD
-
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
 

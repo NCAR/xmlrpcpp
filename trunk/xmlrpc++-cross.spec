@@ -100,6 +100,8 @@ for a in %{archs} ; do
     install -d ${RPM_BUILD_ROOT}%{prefix}/$CROSS_TARGET
     cp -r include ${RPM_BUILD_ROOT}%{prefix}/$CROSS_TARGET
     cp -r lib ${RPM_BUILD_ROOT}%{prefix}/${CROSS_TARGET}
+    # Don't include pkgconfig file
+    %{__rm} -rf ${RPM_BUILD_ROOT}%{prefix}/${CROSS_TARGET}/lib/pkgconfig
 
 
     cat <<__EOF__ > files

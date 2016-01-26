@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=%{_libdir}
+includedir=/usr/include
+
+Name: xmlrpcpp
+Description: A C++ implementation of the XML-RPC protocol
+Version: 0.7
+Libs: -lxmlrpcpp
+Cflags: -I${includedir}/xmlrpcpp
