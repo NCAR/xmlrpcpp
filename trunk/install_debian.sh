@@ -22,7 +22,12 @@ changes=$1
 # get list of binary packages from .changes file
 pkgs=$(grep "^Binary:" $changes | sed -e s/Binary://)
 
+# allow group write
+umask 0002
+
 archs=$(grep "^Architecture:" $changes | sed -e 's/Architecture: *//' | tr \  "|")
+
+flock $repo reprepro -b $repo deleteunreferenced
 
 flock $repo reprepro -V -b $repo -A "$archs" remove jessie $pkgs
 
