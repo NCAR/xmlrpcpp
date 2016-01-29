@@ -9,12 +9,14 @@ Homepage: http://svn.eol.ucar.edu/svn/eol/imports/xmlrpc++
 Package: xmlrpc++-dev
 Section: libdevel
 Architecture: any
+Multi-Arch: same
 Depends: xmlrpc++ (= ${binary:Version}), ${misc:Depends}
 Description: Old xmlrpc++ library
  Needed until we upgrade the DSMs to Debian8 and can convert to libxmlrpc-c
 
 Package: xmlrpc++
 Architecture: any
+Multi-Arch: same
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
 Description: Old xmlrpc++ library

@@ -1,4 +1,0 @@
-usr/include/*
-usr/lib/arm-linux-gnueabi/lib*.a
-usr/lib/arm-linux-gnueabi/lib*.so
-usr/lib/arm-linux-gnueabi/pkgconfig/*
