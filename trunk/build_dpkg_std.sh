@@ -61,7 +61,12 @@ quilt import ../$pkg.patch
 # -us: do not sign the source package
 # -uc: do not sign the .changes file
 [ "$arch" == armel ] && export CC=arm-linux-gnueabi-gcc
-debuild -a$arch -k'<eol-prog@eol.ucar.edu>'
+
+# Since we're also installing the source package with reprepro,
+# it seems we need to specify -sa here to force the inclusion
+# of the orig.tar.gz in the changes file. Not sure why it isn't
+# the default.
+debuild -sa -a$arch -k'<eol-prog@eol.ucar.edu>'
 
 # ls debian
 
