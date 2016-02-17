@@ -27,9 +27,8 @@ umask 0002
 
 archs=$(grep "^Architecture:" $changes | sed -e 's/Architecture: *//' | tr \  "|")
 
-flock $repo reprepro -b $repo deleteunreferenced
-
-flock $repo reprepro -V -b $repo -A "$archs" remove jessie $pkgs
-
-flock $repo reprepro -V -b $repo -A "$archs" include jessie $changes
+flock $repo sh -c "
+    reprepro -V -b $repo -A '$archs' remove jessie $pkgs;
+    reprepro -b $repo deleteunreferenced;
+    reprepro -V -b $repo -A '$archs' include jessie $changes"
 
