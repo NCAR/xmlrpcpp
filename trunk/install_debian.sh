@@ -2,8 +2,8 @@
 
 # install a package to a debian repository
 
-repo=/net/www/docs/software/debian
-repo=/net/ftp/pub/temp/users/maclean/debian
+# repo=/net/ftp/pub/temp/users/maclean/debian
+repo=/net/ftp/pub/archive/software/debian
 
 if [ $# -lt 1 ]; then
     echo "Usage: ${0##*/} changes_file [repo]"
