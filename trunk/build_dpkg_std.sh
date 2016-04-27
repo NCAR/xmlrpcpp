@@ -5,7 +5,7 @@
 if [ $# -lt 2 ]; then
     echo "Usage: ${0##*/} destination arch"
     echo "destination: where you want the .deb packages and associated stuff"
-    echo "arch: amd64 or armel"
+    echo "arch: amd64, armel or armhf"
     exit 1
 fi
 
