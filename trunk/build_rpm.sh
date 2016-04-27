@@ -19,25 +19,7 @@
 
 # set -x
 
-# Get the repo_funcs in eol/repo/scripts
-source repo_scripts/repo_funcs.sh
-
-topdir=${TOPDIR:-`get_rpm_topdir`}
-
-rroot=`get_eol_repo_root`
-
-doinstall=false
-
-case $1 in
--i)
-    doinstall=true
-    shift
-    ;;
-esac
-
-if ! $doinstall; then
-    echo "-i not specified, RPM will not be installed in $rroot"
-fi
+topdir=${TOPDIR:-$(rpmbuild --eval %_topdir)_$(hostname)}
 
 sourcedir=$(rpm --define "_topdir $topdir" --eval %_sourcedir)
 [ -d $sourcedir ] || mkdir -p $sourcedir
@@ -97,27 +79,4 @@ rpmbuild -ba --clean \
     --define "release $release"  \
     --define "_topdir $topdir"  \
     ${pkg}.spec || exit 1
-
-if $doinstall; then
-
-    if [ -d $rroot ]; then
-        # copy rpm for this architecture and source rpm to repositiory
-        arch=`uname -i`
-        archmask=$arch
-        [ "$arch" == i386 ] && archmask="i?86"
-        shopt -s nullglob
-        rpms=($topdir/RPMS/$archmask/${pkg}-${version}*.$archmask.rpm \
-                $topdir/SRPMS/${pkg}-${version}*.src.rpm)
-        copy_rpms_to_eol_repo ${rpms[*]}
-
-        # Only copy cross packages for i386, and only if they were built
-        if [ -n "$archs" ]; then
-            rpms=($topdir/RPMS/i386/${pkg}-cross-*-${version}*.rpm \
-                $topdir/SRPMS/${pkg}-cross-${version}*.src.rpm)
-            copy_ael_rpms_to_eol_repo ${rpms[*]}
-        fi
-    fi
-else
-    echo "-i not specified, RPM will not be installed in $rroot"
-fi
 
