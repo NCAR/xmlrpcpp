@@ -29,6 +29,8 @@ XML-RPC client and server support into C++ applications.
 %{__rm} -rf $RPM_BUILD_ROOT
 %{__make} install LIBDIR=%{_lib} prefix="$RPM_BUILD_ROOT%{_prefix}"
 
+sed -i -e "s,$RPM_BUILD_ROOT,," $RPM_BUILD_ROOT%{_libdir}/pkgconfig/xmlrpcpp.pc
+
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
 
@@ -50,6 +52,8 @@ rm -f %{_libdir}/libxmlrpc++.so.%{version}
 ldconfig
 
 %changelog
+* Mon May 2 2016 Gordon Maclean <maclean@ucar.edu> 0.7-7
+- update to xmlrpcpp.pc
 * Mon Dec  5 2011 Gordon Maclean <maclean@ucar.edu> 0.7-6
 - XmlRpcDispatch::work calls pselect with SIGUSR1 unblocked.
 - If SIGUSR1 is otherwise blocked in the thread, then it will
@@ -61,7 +65,7 @@ ldconfig
 - objdump -p dumps the SONAME, and by convention it should be libname.so.MAJOR
 - When rpm builds dependencies (find-requires, find-provides) of shared
 - libraries it uses the SONAME.
-* Mon Apr 23 2009 Gordon Maclean <maclean@ucar.edu> 0.7-4
+* Thu Apr 23 2009 Gordon Maclean <maclean@ucar.edu> 0.7-4
 - Changed name of library to libxmlrpcpp.so to avoid conflict
 - with xmlrpc-c package. Header files in /usr/include/xmlrpcpp
 * Tue Apr 29 2008  Gary Granger  <granger@ucar.edu> 0.7-3
