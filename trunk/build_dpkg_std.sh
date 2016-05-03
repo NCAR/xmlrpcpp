@@ -70,12 +70,13 @@ debuild -sa -a$arch -k'<eol-prog@eol.ucar.edu>'
 
 # ls debian
 
-# to grab the symbols from the built package:
 cd ..
-dpkg-deb -R ${pkg}_${version}-*_${arch}.deb ${pkg}_tmp
-sed -e 's/0\.7-1/0\.7/' ${pkg}_tmp/DEBIAN/symbols \
-    > xmlrpc++.symbols
 
-rsync -v *.build *.changes *.deb *.debian.tar.xz *.dsc *.orig.tar.gz *.symbols $dest
+# to grab the symbols from the built package:
+# dpkg-deb -R ${pkg}_${version}-*_${arch}.deb ${pkg}_tmp
+# sed -e 's/0\.7-1/0\.7/' ${pkg}_tmp/DEBIAN/symbols \
+#     > xmlrpc++.symbols
+
+rsync -v *.build *.changes *.deb *.debian.tar.xz *.dsc *.orig.tar.gz $dest
 
 # echo $tmpdir

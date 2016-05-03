@@ -59,7 +59,8 @@ install:
 		$(MKDIR) $(DESTDIR)$(prefix)/$(LIBDIR)
 		$(CP) $(SO) $(LIB) $(DESTDIR)$(prefix)/$(LIBDIR)
 		$(MKDIR) $(DESTDIR)$(prefix)/$(LIBDIR)/pkgconfig
-		$(CP) xmlrpcpp.pc $(DESTDIR)$(prefix)/$(LIBDIR)/pkgconfig
+		sed -e 's,@PREFIX@,$(prefix),' -e 's,@LIBDIR@,$(LIBDIR),' xmlrpcpp.pc > \
+			$(DESTDIR)$(prefix)/$(LIBDIR)/pkgconfig/xmlrpcpp.pc
 		$(MKDIR) $(DESTDIR)$(prefix)/include/xmlrpcpp
 		$(CP) src/*.h $(DESTDIR)$(prefix)/include/xmlrpcpp
 		( cd $(DESTDIR)$(prefix)/$(LIBDIR); rm -f libxmlrpcpp.so libxmlrpcpp.so.$(MAJOR); $(LN) $(SO) libxmlrpcpp.so;  $(LN) $(SO) libxmlrpcpp.so.$(MAJOR); )
