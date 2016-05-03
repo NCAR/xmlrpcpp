@@ -2,7 +2,7 @@ xmlrpc++ (0.7-3) stable; urgency=low
 
   * Updates to xmlrpcpp.pc
 
- -- Gordon Maclean <maclean@ucar.edu>  Mon  2 May 2016 13:35:09 -0700
+ -- Gordon Maclean <maclean@ucar.edu>  Mon, 2 May 2016 13:35:09 -0700
 xmlrpc++ (0.7-2) stable; urgency=low
 
   * Updates for multi-arch
