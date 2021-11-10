@@ -2,19 +2,51 @@
 
 # Build source and binary debian packages of xmlrpc++
 
-if [ $# -lt 2 ]; then
-    echo "Usage: ${0##*/} destination arch"
+usage() {
+    echo "Usage: ${0##*/} [--no-sign] destination arch"
     echo "destination: where you want the .deb packages and associated stuff"
     echo "arch: amd64, armel or armhf"
     exit 1
+}
+
+dest=""
+arch=""
+sign=1
+while [ $# -gt 0 ]; do
+
+    case "$1" in
+
+        --no-sign)
+            sign=0;;
+
+        -*)
+            echo "Unrecognized option: $1"
+            usage
+            ;;
+
+        *)
+            if [ -z "$dest" ]; then
+                dest="$1"
+            elif [ -z "$arch" ]; then
+                arch="$1"
+            else
+                echo "Too many arguments."
+                usage
+            fi
+            ;;
+
+    esac
+    shift
+
+done
+
+if [ -z "$dest" -o -z "$arch" ]; then
+    usage
 fi
 
-dest=$1
 [ -d $dest ] || mkdir -p $dest
 rm -f $dest/*
 [[ $dest == /* ]] || dest=$PWD/$dest
-
-arch=$2
 
 pkg=xmlrpc++
 version=0.7
@@ -66,7 +98,11 @@ quilt import ../$pkg.patch
 # it seems we need to specify -sa here to force the inclusion
 # of the orig.tar.gz in the changes file. Not sure why it isn't
 # the default.
-debuild -sa -a$arch -k'<eol-prog@eol.ucar.edu>'
+key="-sa -k'<eol-prog@eol.ucar.edu>'"
+if [ $sign -eq 0 ]; then
+    key="-us -uc"
+fi
+debuild -a$arch $key
 
 # ls debian
 
