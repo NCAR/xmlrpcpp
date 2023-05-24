@@ -26,18 +26,7 @@ sourcedir=$(rpm --define "_topdir $topdir" --eval %_sourcedir)
 
 pkg=xmlrpc++
 version=0.7
-fversion=`echo $version | sed 's/\./_/g'`
-
-get_release() 
-{
-    # discard M,S,P, mixed versions
-    v=$(svnversion . | sed 's/:.*$//' | sed s/[A-Z]//g)
-    [ $v == exported ] && v=1
-    echo $v
-}
-
-# jenkins sets SVN_REVISION
-release=${SVN_REVISION:=$(get_release)}
+release=1
 doarm=false
 which arm-linux-gcc > /dev/null 2>&1 && doarm=true
 
